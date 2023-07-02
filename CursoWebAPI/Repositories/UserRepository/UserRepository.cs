@@ -25,7 +25,7 @@ namespace EmploymentExchange.Repositories
         {
             User? user = await dbContext.Users
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return user == null ? null : user;
         }
@@ -43,7 +43,7 @@ namespace EmploymentExchange.Repositories
         {
             User? dbUsers = await dbContext.Users
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbUsers == null || !dbUsers.ComparePassword(user.Password)) return null;
 
@@ -61,7 +61,7 @@ namespace EmploymentExchange.Repositories
         {
             User? userExist = await dbContext.Users
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (userExist == null) return null;
 

@@ -25,7 +25,7 @@ namespace EmploymentExchange.Repositories
         {
             JobType? jobType = await dbContext.JobTypes
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return jobType == null ? null : jobType;
         }
@@ -42,7 +42,7 @@ namespace EmploymentExchange.Repositories
         {
             JobType? dbJobType = await dbContext.JobTypes
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbJobType == null) return null;
 
@@ -57,7 +57,7 @@ namespace EmploymentExchange.Repositories
         {
             JobType? jobTypeExist = await dbContext.JobTypes
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (jobTypeExist == null) return null;
 

@@ -24,7 +24,7 @@ namespace EmploymentExchange.Repositories
         {
             Company? companie = await dbContext.Companies
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return companie == null ? null : companie;
         }
@@ -41,7 +41,7 @@ namespace EmploymentExchange.Repositories
         {
             Company? dbCompany = await dbContext.Companies
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbCompany == null) return null;
 
@@ -59,7 +59,7 @@ namespace EmploymentExchange.Repositories
         {
             Company? companyExist = await dbContext.Companies
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (companyExist == null) return null;
 

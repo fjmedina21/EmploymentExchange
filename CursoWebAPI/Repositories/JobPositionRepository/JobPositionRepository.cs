@@ -1,7 +1,6 @@
 ﻿using EmploymentExchange.Data;
 using EmploymentExchange.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace EmploymentExchange.Repositories
 {
@@ -24,7 +23,7 @@ namespace EmploymentExchange.Repositories
             if (!string.IsNullOrWhiteSpace(category))
             {
                 jobPosition = jobPosition
-                    .Where(e => e.Category.Name.Equals(category, StringComparison.OrdinalIgnoreCase));
+                    .Where(e => e.Category.Name.Equals(category));
             }
 
             return await jobPosition.ToListAsync();
@@ -35,7 +34,7 @@ namespace EmploymentExchange.Repositories
             JobPosition? jobPosition = await dbContext.JobPositions
                 .Where(e => e.State).Where(e => e.Category.State)
                 .Include(e => e.Category)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return jobPosition == null ? null : jobPosition;
         }
@@ -52,7 +51,7 @@ namespace EmploymentExchange.Repositories
         {
             JobPosition? dbJobPosition = await dbContext.JobPositions
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbJobPosition == null) return null;
 
@@ -67,7 +66,7 @@ namespace EmploymentExchange.Repositories
         {
             JobPosition? jobPositionExist = await dbContext.JobPositions
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (jobPositionExist == null) return null;
 

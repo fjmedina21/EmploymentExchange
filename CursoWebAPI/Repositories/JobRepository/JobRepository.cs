@@ -60,7 +60,7 @@ namespace EmploymentExchange.Repositories
                 .Where(e => e.JobType.State).Where(e => e.Company.State)
                 .Include(e => e.JobPosition).Include(e => e.JobPosition.Category)
                 .Include(e => e.JobType).Include(e => e.Company)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return job == null ? null : job;
         }
@@ -92,7 +92,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<Job?> UpdateJobAsync(Guid id, Job job)
         {
-            Job? dbJob = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id == id);
+            Job? dbJob = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbJob == null) return null;
 
@@ -109,7 +109,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<Job?> DeleteJobAsync(Guid id)
         {
-            Job? jobExist = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id == id);
+            Job? jobExist = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (jobExist == null) return null;
 

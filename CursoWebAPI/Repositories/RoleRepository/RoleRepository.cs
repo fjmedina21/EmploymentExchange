@@ -25,7 +25,7 @@ namespace EmploymentExchange.Repositories
         {
             Role? role = await dbContext.Roles
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return role == null ? null : role;
         }
@@ -42,7 +42,7 @@ namespace EmploymentExchange.Repositories
         {
             Role? dbRole = await dbContext.Roles
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbRole == null) return null;
 
@@ -58,7 +58,7 @@ namespace EmploymentExchange.Repositories
         {
             Role? roleExist = await dbContext.Roles
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (roleExist == null) return null;
 

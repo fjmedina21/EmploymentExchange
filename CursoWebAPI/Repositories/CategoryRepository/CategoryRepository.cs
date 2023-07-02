@@ -25,7 +25,7 @@ namespace EmploymentExchange.Repositories
         {
             Category? category = await dbContext.Categories
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return category == null ? null : category;
         }
@@ -42,7 +42,7 @@ namespace EmploymentExchange.Repositories
         {
             Category? dbCatgory = await dbContext.Categories
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbCatgory == null) return null;
 
@@ -57,7 +57,7 @@ namespace EmploymentExchange.Repositories
         {
             Category? categoryExist = await dbContext.Categories
                 .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (categoryExist == null) return null;
 
