@@ -18,6 +18,6 @@ namespace EmploymentExchange.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<RoleUser> RolesUsers { get; set; } = new List<RoleUser>();
+        public IList<User> Users { get; set; } = new List<User>();
     }
 }

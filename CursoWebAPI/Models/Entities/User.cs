@@ -25,9 +25,9 @@ namespace EmploymentExchange.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<RoleUser> RolesUsers { get; set; } = new List<RoleUser>();
-        public IList<JobUser> JobsUsers { get; set; } = new List<JobUser>();
-
+        public IList<Role> Roles { get; set; } = new List<Role>();
+        public IList<Job> Jobs { get; set; } = new List<Job>();
+        
         public string HashPassword(string password)
         {
             return Password = BC.EnhancedHashPassword(password, 15);
