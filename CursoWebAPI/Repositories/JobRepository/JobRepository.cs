@@ -22,7 +22,7 @@ namespace EmploymentExchange.Repositories
                 .Where(e => e.State).Where(e => e.JobPosition.State)
                 .Where(e => e.JobType.State).Where(e => e.Company.State)
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-                .Include(e => e.JobPosition).Include(e => e.JobPosition.Category)
+                .Include(e => e.JobPosition).ThenInclude(e => e.Category)
                 .Include(e => e.JobType).Include(e => e.Company)
                 .Skip(skipResults).Take(pageSize)
                 .AsQueryable();
@@ -58,7 +58,7 @@ namespace EmploymentExchange.Repositories
             Job? job = await dbContext.Jobs
                 .Where(e => e.State).Where(e => e.JobPosition.State)
                 .Where(e => e.JobType.State).Where(e => e.Company.State)
-                .Include(e => e.JobPosition).Include(e => e.JobPosition.Category)
+                .Include(e => e.JobPosition).ThenInclude(e => e.Category)
                 .Include(e => e.JobType).Include(e => e.Company)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 

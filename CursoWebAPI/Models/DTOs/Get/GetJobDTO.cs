@@ -2,7 +2,7 @@
 
 namespace EmploymentExchange.Models
 {
-    public class READJobDTO
+    public class GetJobDTO
     {
         public Guid Id { get; set; }
         public string Company { get; set; }

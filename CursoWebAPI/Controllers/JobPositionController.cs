@@ -27,7 +27,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetJobPositions([FromQuery] string? category)
         {
             List<JobPosition> jobPositions = await jobPositionRepo.GetJobPositionsAsync(category);
-            List<READJobPositionDTO> ReadJobPositionDTO = mapper.Map<List<READJobPositionDTO>>(jobPositions);
+            List<GetJobPositionDTO> ReadJobPositionDTO = mapper.Map<List<GetJobPositionDTO>>(jobPositions);
 
             return Ok(new APIResponse(ReadJobPositionDTO));
         }
@@ -37,7 +37,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetJobPositionById([FromRoute] Guid id)
         {
             JobPosition? jobPosition = await jobPositionRepo.GetJobPositionByIdAsync(id);
-            READJobPositionDTO ReadJobPositionDTO = mapper.Map<READJobPositionDTO>(jobPosition);
+            GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
             if (jobPosition == null) return NotFound(new APIResponse(404, false));
 
@@ -55,7 +55,7 @@ namespace EmploymentExchange.Controllers
 
             jobPosition = await jobPositionRepo.CreateJobPositionAsync(jobPosition);
 
-            READJobPositionDTO ReadJobPositionDTO = mapper.Map<READJobPositionDTO>(jobPosition);
+            GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
             return CreatedAtAction(nameof(GetJobPositionById), new { id = jobPosition.Id }, new APIResponse(ReadJobPositionDTO, 201));
         }
@@ -70,7 +70,7 @@ namespace EmploymentExchange.Controllers
 
             if (jobPosition == null) return NotFound(new APIResponse(404, false));
 
-            READJobPositionDTO ReadJobPositionDTO = mapper.Map<READJobPositionDTO>(jobPosition);
+            GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
             return Ok(new APIResponse(ReadJobPositionDTO));
         }

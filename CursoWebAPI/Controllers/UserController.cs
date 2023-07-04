@@ -25,7 +25,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetUsers()
         {
             List<User> users = await userRepo.GetUsersAsync();
-            List<READUserDTO> ReadUsersDTO = mapper.Map<List<READUserDTO>>(users);
+            List<GetUserDTO> ReadUsersDTO = mapper.Map<List<GetUserDTO>>(users);
 
             return Ok(new APIResponse(ReadUsersDTO)); 
         }
@@ -38,7 +38,7 @@ namespace EmploymentExchange.Controllers
         
             if (user == null) return NotFound(new APIResponse(404, false));
 
-            READUserDTO ReadUserDTO = mapper.Map<READUserDTO>(user);
+            GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
             return Ok(new APIResponse(ReadUserDTO));
         }
@@ -49,7 +49,7 @@ namespace EmploymentExchange.Controllers
         {
             User user = mapper.Map<User>(userDTO);
             user = await userRepo.CreateUserAsync(user);
-            READUserDTO ReadUserDTO = mapper.Map<READUserDTO>(user);
+            GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(ReadUserDTO, 201));
         }
@@ -64,7 +64,7 @@ namespace EmploymentExchange.Controllers
 
             if (user == null) return NotFound(new APIResponse(404, false));
 
-            READUserDTO ReadUserDTO = mapper.Map<READUserDTO>(user);
+            GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
             return Ok(new APIResponse(ReadUserDTO));
         }

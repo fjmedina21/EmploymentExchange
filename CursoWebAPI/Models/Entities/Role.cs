@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EmploymentExchange.Models.Entities.ManyToMany;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmploymentExchange.Models
@@ -18,6 +19,6 @@ namespace EmploymentExchange.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<User> Users { get; set; } = new List<User>();
+        public ICollection<RoleUser> RoleUser { get; set; } 
     }
 }

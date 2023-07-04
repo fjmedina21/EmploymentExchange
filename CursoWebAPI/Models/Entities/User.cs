@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EmploymentExchange.Models.Entities.ManyToMany;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using BC = BCrypt.Net.BCrypt;
 
 namespace EmploymentExchange.Models
@@ -25,8 +27,8 @@ namespace EmploymentExchange.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<Role> Roles { get; set; } = new List<Role>();
-        public IList<Job> Jobs { get; set; } = new List<Job>();
+        public ICollection<RoleUser> RoleUser { get; set; } 
+        public ICollection<Job> Jobs { get; set; } 
         
         public string HashPassword(string password)
         {

@@ -1,6 +1,6 @@
 ﻿namespace EmploymentExchange.Models
 {
-    public class READUserDTO
+    public class GetUserDTO
     {
         public Guid Id { get; set; }
         public string FirstName { get; set; }

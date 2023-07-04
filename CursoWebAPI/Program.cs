@@ -4,7 +4,8 @@ using EmploymentExchange.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Encoding = System.Text.Encoding;
+using RH = System.Text.Json.Serialization.ReferenceHandler;
+using E = System.Text.Encoding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,8 @@ builder.Services.AddCors(
 );
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = RH.IgnoreCycles);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -58,7 +60,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         //ValidIssuers = builder.Configuration["JWT:Issuers"]
         //ValidAudiences = builder.Configuration["JWT:Audiences"]
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+            E.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
     };
     });
 

@@ -18,6 +18,7 @@ namespace EmploymentExchange.Repositories
             return await dbContext.Roles
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
+                //.Include(e => e.RoleUser).ThenInclude(e => e.Users)
                 .ToListAsync();
         }
 

@@ -25,7 +25,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetJobs([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             List<Job> jobs = await jobRepo.GetJobsAsync(pageNumber, pageSize, filterOn, filterQuery);
-            List<READJobDTO> ReadJobsDTO = mapper.Map<List<READJobDTO>>(jobs);
+            List<GetJobDTO> ReadJobsDTO = mapper.Map<List<GetJobDTO>>(jobs);
 
             return Ok(new APIResponse(ReadJobsDTO));
         }
@@ -38,7 +38,7 @@ namespace EmploymentExchange.Controllers
             
             if (job == null) return NotFound(new APIResponse(404, false));
             
-            READJobDTO ReadJobDTO = mapper.Map<READJobDTO>(job);
+            GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
             return Ok(new APIResponse(ReadJobDTO));
         }
@@ -48,7 +48,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetJobsByCategory([FromRoute] string category, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             List<Job>? jobs = await jobRepo.GetJobsByCategoryAsync(category, pageNumber, pageSize);
-            List<READJobDTO> ReadJobsDTO = mapper.Map<List<READJobDTO>>(jobs);
+            List<GetJobDTO> ReadJobsDTO = mapper.Map<List<GetJobDTO>>(jobs);
 
             return Ok(new APIResponse(ReadJobsDTO));
         }
@@ -59,7 +59,7 @@ namespace EmploymentExchange.Controllers
         {
             Job job = mapper.Map<Job>(jobDTO);
             job = await jobRepo.CreateJobAsync(job);
-            READJobDTO ReadJobDTO = mapper.Map<READJobDTO>(job);
+            GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
             return CreatedAtAction(nameof(GetJobById), new { id = job.Id }, new APIResponse(ReadJobDTO, 201));
         }
@@ -74,7 +74,7 @@ namespace EmploymentExchange.Controllers
 
             if (job == null) return NotFound(new APIResponse(404, false));
 
-            READJobDTO ReadJobDTO = mapper.Map<READJobDTO>(job);
+            GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
             return Ok(new APIResponse(ReadJobDTO));
         }

@@ -17,7 +17,8 @@ namespace EmploymentExchange.Repositories
         {
             return await dbContext.Users
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-                .Where(e => e.State)
+                .Where(e => e.State)                
+                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
                 .ToListAsync();
         }
 
@@ -25,6 +26,7 @@ namespace EmploymentExchange.Repositories
         {
             User? user = await dbContext.Users
                 .Where(e => e.State)
+                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return user == null ? null : user;

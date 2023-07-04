@@ -25,7 +25,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetCategories()
         {
             List<Category> categories = await categoryRepo.GetCategoriesAsync();
-            List<READCategoryDTO> ReadCategoryDTO = mapper.Map<List<READCategoryDTO>>(categories);
+            List<GetCategoryDTO> ReadCategoryDTO = mapper.Map<List<GetCategoryDTO>>(categories);
 
             return Ok(new APIResponse(ReadCategoryDTO)); ;
         }
@@ -35,7 +35,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             Category? category = await categoryRepo.GetCategoryByIdAsync(id);
-            READCategoryDTO ReadCategoryDTO = mapper.Map<READCategoryDTO>(category);
+            GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
             if (category == null) return NotFound(new APIResponse(404, false));
 
@@ -48,7 +48,7 @@ namespace EmploymentExchange.Controllers
         {
             Category category = mapper.Map<Category>(categoryDTO);
             category = await categoryRepo.CreateCategoryAsync(category);
-            READCategoryDTO ReadCategoryDTO = mapper.Map<READCategoryDTO>(category);
+            GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
             return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, new APIResponse(ReadCategoryDTO, 201));
         }
@@ -63,7 +63,7 @@ namespace EmploymentExchange.Controllers
 
             if (category == null) return NotFound(new APIResponse(404, false));
 
-            READCategoryDTO ReadCategoryDTO = mapper.Map<READCategoryDTO>(category);
+            GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
             return Ok(new APIResponse(ReadCategoryDTO));
         }

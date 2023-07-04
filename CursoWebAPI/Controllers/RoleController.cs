@@ -25,7 +25,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetRoles()
         {
             List<Role> roles = await roleRepo.GetRolesAsync();
-            List<READRoleDTO> ReadRolesDTO = mapper.Map<List<READRoleDTO>>(roles);
+            List<GetRoleDTO> ReadRolesDTO = mapper.Map<List<GetRoleDTO>>(roles);
 
             return Ok(new APIResponse(ReadRolesDTO));
         }
@@ -38,7 +38,7 @@ namespace EmploymentExchange.Controllers
 
             if (role == null) return NotFound(new APIResponse(404, false));
 
-            READRoleDTO ReadRolesDTO = mapper.Map<READRoleDTO>(role);
+            GetRoleDTO ReadRolesDTO = mapper.Map<GetRoleDTO>(role);
 
             return Ok(new APIResponse(ReadRolesDTO));
         }
@@ -49,7 +49,7 @@ namespace EmploymentExchange.Controllers
         {
             Role role = mapper.Map<Role>(roleDTO);
             role = await roleRepo.CreateRoleAsync(role);
-            READRoleDTO ReadRoleDTO = mapper.Map<READRoleDTO>(role);
+            GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
             return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(ReadRoleDTO,201));
         }
@@ -64,7 +64,7 @@ namespace EmploymentExchange.Controllers
 
             if (role == null) return NotFound(new APIResponse(404, false));
 
-            READRoleDTO ReadRoleDTO = mapper.Map<READRoleDTO>(role);
+            GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
             return Ok(new APIResponse(ReadRoleDTO));
         }

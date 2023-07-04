@@ -25,7 +25,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetCompanies()
         {
             List<Company> Companies = await companyRepo.GetCompaniesAsync();
-            List<READCompanyDTO> ReadCompanyDTO = mapper.Map<List<READCompanyDTO>>(Companies);
+            List<GetCompanyDTO> ReadCompanyDTO = mapper.Map<List<GetCompanyDTO>>(Companies);
 
             return Ok(new APIResponse(ReadCompanyDTO)); 
         }
@@ -35,7 +35,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetCompanyById([FromRoute] Guid id)
         {
             Company? company = await companyRepo.GetCompanyByIdAsync(id);
-            READCompanyDTO ReadCompanyDTO = mapper.Map<READCompanyDTO>(company);
+            GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
 
             if (company == null) return NotFound(new APIResponse(404, false));
 
@@ -48,7 +48,7 @@ namespace EmploymentExchange.Controllers
         {
             Company company = mapper.Map<Company>(companyDTO);
             company = await companyRepo.CreateCompanyAsync(company);
-            READCompanyDTO ReadCompanyDTO = mapper.Map<READCompanyDTO>(company);
+            GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
 
             return CreatedAtAction(nameof(GetCompanyById), new { id = company.Id }, new APIResponse(ReadCompanyDTO, 201));
         }
@@ -63,7 +63,7 @@ namespace EmploymentExchange.Controllers
 
             if (company == null) return NotFound(new APIResponse(404, false));
 
-            READCompanyDTO ReadCompanyDTO = mapper.Map<READCompanyDTO>(company);
+            GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
 
             return Ok(new APIResponse(ReadCompanyDTO));
         }

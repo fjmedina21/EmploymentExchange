@@ -25,7 +25,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetJobTypes()
         {
             List<JobType> jobTypes = await jobTypeRepo.GetJobTypesAsync();
-            List<READJobTypeDTO> ReadJobTypeDTO = mapper.Map<List<READJobTypeDTO>>(jobTypes);
+            List<GetJobTypeDTO> ReadJobTypeDTO = mapper.Map<List<GetJobTypeDTO>>(jobTypes);
 
             return Ok(new APIResponse(ReadJobTypeDTO));
         }
@@ -38,7 +38,7 @@ namespace EmploymentExchange.Controllers
 
             if (jobType == null) return NotFound(new APIResponse(404, false));
 
-            READJobTypeDTO ReadJobTypeDTO = mapper.Map<READJobTypeDTO>(jobType);
+            GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
             return Ok(new APIResponse(ReadJobTypeDTO));
         }
@@ -49,7 +49,7 @@ namespace EmploymentExchange.Controllers
         {
             JobType jobType = mapper.Map<JobType>(jobTypeDTO);
             jobType = await jobTypeRepo.CreateJobTypeAsync(jobType);
-            READJobTypeDTO ReadJobTypeDTO = mapper.Map<READJobTypeDTO>(jobType);
+            GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
             return CreatedAtAction(nameof(GetJobTypeById), new { id = jobType.Id }, new APIResponse(ReadJobTypeDTO, 201));
         }
@@ -64,7 +64,7 @@ namespace EmploymentExchange.Controllers
             
             if (jobType == null) return NotFound(new APIResponse(404, false));
             
-            READJobTypeDTO ReadJobTypeDTO = mapper.Map<READJobTypeDTO>(jobType);
+            GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
             return Ok(new APIResponse(ReadJobTypeDTO));
         }

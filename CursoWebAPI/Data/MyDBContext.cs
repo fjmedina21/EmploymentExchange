@@ -1,4 +1,5 @@
 ﻿using EmploymentExchange.Models;
+using EmploymentExchange.Models.Entities.ManyToMany;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmploymentExchange.Data
@@ -15,10 +16,13 @@ namespace EmploymentExchange.Data
         public DbSet<Job> Jobs { get; set; }
         public DbSet<JobPosition> JobPositions { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
+        public DbSet<RoleUser> RoleUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RoleUser>().HasKey(e => new { e.RoleId, e.UserId });
 
             List<JobType> defaultJobTypes = new List<JobType>();
             defaultJobTypes.Add(new JobType { Name = "Full-time" });

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using EmploymentExchange.Models;
+using EmploymentExchange.Models.DTOs.Private;
+using EmploymentExchange.Models.Entities.ManyToMany;
 
 namespace EmploymentExchange
 {
@@ -11,26 +13,35 @@ namespace EmploymentExchange
             CreateMap<User, LoggedInDTO>();             
 
             CreateMap<UserDTO, User>();
-            CreateMap<User, READUserDTO>();                
+            CreateMap<User, GetUserDTO>();             
+            CreateMap<User, PGetUserDTO>()
+                .ForMember(e => e.Roles, e => e.MapFrom(x => x.RoleUser));
+
+            CreateMap<RoleUser, PGetUserRolesDTO>()
+                .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles));
+            CreateMap<RoleUser, PGetRoleUsers>()
+                .ForMember(e => e.User, e => e.MapFrom(x => x.Users));
 
             CreateMap<RoleDTO, Role>();
-            CreateMap<Role, READRoleDTO>();       
+            CreateMap<Role, GetRoleDTO>();
+            CreateMap<Role, PGetRoleDTO>()
+                .ForMember(e => e.Users, e => e.MapFrom(x => x.RoleUser));
 
             CreateMap<JobTypeDTO, JobType>();
-            CreateMap<JobType, READJobTypeDTO>();
+            CreateMap<JobType, GetJobTypeDTO>();
 
             CreateMap<CompanyDTO, Company>();
-            CreateMap<Company, READCompanyDTO>();
+            CreateMap<Company, GetCompanyDTO>();
 
             CreateMap<CategoryDTO, Category>();
-            CreateMap<Category, READCategoryDTO>();
+            CreateMap<Category, GetCategoryDTO>();
 
             CreateMap<JobPositionDTO, JobPosition>();
-            CreateMap<JobPosition, READJobPositionDTO>()
+            CreateMap<JobPosition, GetJobPositionDTO>()
                 .ForMember(e => e.Category, e => e.MapFrom(x => x.Category.Name));
 
             CreateMap<JobDTO, Job>();
-            CreateMap<Job, READJobDTO>()
+            CreateMap<Job, GetJobDTO>()
                 .ForMember(e => e.Company, e => e.MapFrom(x => x.Company.Name))
                 .ForMember(e => e.RecruiterEmail, e => e.MapFrom(x => x.Company.RecruiterEmail))
                 .ForMember(e => e.Logo, e => e.MapFrom(x => x.Company.Logo))
