@@ -2,7 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Encoding = System.Text.Encoding;
+using E = System.Text.Encoding;
 
 namespace EmploymentExchange.Repositories
 {
@@ -19,10 +19,11 @@ namespace EmploymentExchange.Repositories
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim("guid", user.Id.ToString()),
+                new Claim("email", user.Email)
             };
-
-            SymmetricSecurityKey secretKey = new(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]));
+            
+            SymmetricSecurityKey secretKey = new(E.UTF8.GetBytes(configuration["JWT:SecretKey"]));
 
             SigningCredentials credentials = new(secretKey, SecurityAlgorithms.HmacSha512Signature);
 

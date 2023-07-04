@@ -19,7 +19,7 @@ namespace EmploymentExchange
 
             CreateMap<RoleUser, PGetUserRolesDTO>()
                 .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles));
-            CreateMap<RoleUser, PGetRoleUsers>()
+            CreateMap<RoleUser, PGetRoleUsersDTO>()
                 .ForMember(e => e.User, e => e.MapFrom(x => x.Users));
 
             CreateMap<RoleDTO, Role>();
