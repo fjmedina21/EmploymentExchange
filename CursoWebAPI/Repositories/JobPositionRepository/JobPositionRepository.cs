@@ -15,7 +15,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<List<JobPosition>> GetJobPositionsAsync(string? category)
         {
-            IQueryable<JobPosition> jobPosition = dbContext.JobPositions
+            IQueryable<JobPosition> jobPosition = dbContext.JobPositions.AsNoTracking()
                 .Where(e => e.State).Where(e => e.Category.State)
                 .Include(e => e.Category)
                 .AsQueryable();
@@ -31,7 +31,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<JobPosition?> GetJobPositionByIdAsync(Guid id)
         {
-            JobPosition? jobPosition = await dbContext.JobPositions
+            JobPosition? jobPosition = await dbContext.JobPositions.AsNoTracking()
                 .Where(e => e.State).Where(e => e.Category.State)
                 .Include(e => e.Category)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));

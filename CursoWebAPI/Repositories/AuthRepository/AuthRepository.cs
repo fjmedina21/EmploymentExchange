@@ -21,7 +21,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<LoggedInDTO?> LogInAsync(LoginDTO login)
         {
-            User? user = await dbContext.Users.Where(e => e.State)
+            User? user = await dbContext.Users.AsNoTracking().Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Email == login.Email);
 
             if (user == null || !user.ComparePassword(login.Password)) return null;

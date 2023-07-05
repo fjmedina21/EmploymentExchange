@@ -18,7 +18,7 @@ namespace EmploymentExchange.Repositories
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
 
-            IQueryable<Job> jobs = dbContext.Jobs
+            IQueryable<Job> jobs = dbContext.Jobs.AsNoTracking()
                 .Where(e => e.State).Where(e => e.JobPosition.State)
                 .Where(e => e.JobType.State).Where(e => e.Company.State)
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
@@ -55,7 +55,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<Job?> GetJobByIdAsync(Guid id)
         {
-            Job? job = await dbContext.Jobs
+            Job? job = await dbContext.Jobs.AsNoTracking()
                 .Where(e => e.State).Where(e => e.JobPosition.State)
                 .Where(e => e.JobType.State).Where(e => e.Company.State)
                 .Include(e => e.JobPosition).ThenInclude(e => e.Category)

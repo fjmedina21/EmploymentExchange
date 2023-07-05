@@ -10,13 +10,15 @@ namespace EmploymentExchange
         public MappingProfiles()
         {
             CreateMap<LoginDTO, User>();
-            CreateMap<User, LoggedInDTO>();             
+            CreateMap<User, LoggedInDTO>();
+            
 
             CreateMap<UserDTO, User>();
             CreateMap<User, GetUserDTO>();             
             CreateMap<User, PGetUserDTO>()
                 .ForMember(e => e.Roles, e => e.MapFrom(x => x.RoleUser));
 
+            ///////////////////////////////////////////////////////////////////////////
             // Many to Many : RoleUSer
             CreateMap<RoleUser, PGetUserRolesDTO>()
                 .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles.Name));

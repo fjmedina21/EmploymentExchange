@@ -15,7 +15,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<List<Role>> GetRolesAsync()
         {
-            return await dbContext.Roles
+            return await dbContext.Roles.AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
                 //.Include(e => e.RoleUser).ThenInclude(e => e.Users)
@@ -24,7 +24,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<Role?> GetRoleByIdAsync(Guid id)
         {
-            Role? role = await dbContext.Roles
+            Role? role = await dbContext.Roles.AsNoTracking()
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 

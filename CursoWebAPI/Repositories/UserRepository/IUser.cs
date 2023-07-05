@@ -1,10 +1,11 @@
 ﻿using EmploymentExchange.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EmploymentExchange.Repositories
 {
     public interface IUser
     {
-        Task<List<User>> GetUsersAsync();
+        Task<List<User>> GetUsersAsync(int pageNumber = 1, int pageSize = 100);
         Task<User?> GetUserByIdAsync(Guid id);
         Task<User> CreateUserAsync(User user);
         Task<User?> UpdateUserAsync(Guid id, User user);

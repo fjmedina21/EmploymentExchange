@@ -25,15 +25,15 @@ namespace EmploymentExchange.Data
             modelBuilder.Entity<RoleUser>().HasKey(e => new { e.RoleId, e.UserId });
 
             List<JobType> defaultJobTypes = new List<JobType>();
-            defaultJobTypes.Add(new JobType { Name = "Full-time" });
-            defaultJobTypes.Add(new JobType { Name = "Part-time" });
+            defaultJobTypes.Add(new JobType { Name = "Full-Time" });
+            defaultJobTypes.Add(new JobType { Name = "Part-Time" });
             defaultJobTypes.Add(new JobType { Name = "Contract" });
             defaultJobTypes.Add(new JobType { Name = "Internship" });
 
             List<Role> defaultRolesValues = new List<Role>();
-            defaultRolesValues.Add(new Role { Name = "Admin", Description = "Site owner" });
-            defaultRolesValues.Add(new Role { Name = "Poster", Description = "Recruiter, looking for employ personal" });
-            defaultRolesValues.Add(new Role { Name = "User", Description = "Employee, looking for a job" });
+            defaultRolesValues.Add(new Role { Name = "admin", Description = "Site owner" });
+            defaultRolesValues.Add(new Role { Name = "poster", Description = "Recruiter, looking for employ personal" });
+            defaultRolesValues.Add(new Role { Name = "user", Description = "Employee, looking for a job" });
 
             modelBuilder.Entity<Role>().HasData(defaultRolesValues);
             modelBuilder.Entity<JobType>().HasData(defaultJobTypes);

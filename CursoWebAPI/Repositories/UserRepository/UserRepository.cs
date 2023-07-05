@@ -13,18 +13,24 @@ namespace EmploymentExchange.Repositories
             dbContext = dBContext;
         }
 
-        public async Task<List<User>> GetUsersAsync()
+        public async Task<List<User>> GetUsersAsync(int pageNumber = 1, int pageSize = 100)
         {
-            return await dbContext.Users
+            //pagination
+            int skipResults = (pageNumber - 1) * pageSize;
+
+            IQueryable<User> users = dbContext.Users.AsNoTracking()
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-                .Where(e => e.State)                
+                .Where(e => e.State)
                 .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
-                .ToListAsync();
+                .Skip(skipResults).Take(pageSize)
+                .AsQueryable();
+
+            return await users.ToListAsync();
         }
 
         public async Task<User?> GetUserByIdAsync(Guid id)
         {
-            User? user = await dbContext.Users
+            User? user = await dbContext.Users.AsNoTracking()
                 .Where(e => e.State)
                 .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));

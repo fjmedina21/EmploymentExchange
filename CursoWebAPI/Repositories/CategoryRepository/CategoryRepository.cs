@@ -15,7 +15,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<List<Category>> GetCategoriesAsync()
         {
-            return await dbContext.Categories
+            return await dbContext.Categories.AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
                 .ToListAsync();
@@ -23,7 +23,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<Category?> GetCategoryByIdAsync(Guid id)
         {
-            Category? category = await dbContext.Categories
+            Category? category = await dbContext.Categories.AsNoTracking()
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 

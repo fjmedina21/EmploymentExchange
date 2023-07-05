@@ -35,6 +35,7 @@ builder.Services.AddDbContext<MyDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer"));
 });
 
+//DTOs Mapping
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 //Add Scopes
@@ -73,6 +74,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+//app.UseResponseCaching();
 app.UseHttpsRedirection();
 app.UseCors();
 //app.UseCors("CustomPolicy");

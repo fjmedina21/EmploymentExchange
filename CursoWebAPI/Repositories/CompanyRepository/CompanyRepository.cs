@@ -15,14 +15,14 @@ namespace EmploymentExchange.Repositories
 
         public async Task<List<Company>> GetCompaniesAsync()
         {
-            return await dbContext.Companies
+            return await dbContext.Companies.AsNoTracking()
                 .Where(e => e.State)
                 .ToListAsync();
         }
 
         public async Task<Company?> GetCompanyByIdAsync(Guid id)
         {
-            Company? companie = await dbContext.Companies
+            Company? companie = await dbContext.Companies.AsNoTracking()
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 

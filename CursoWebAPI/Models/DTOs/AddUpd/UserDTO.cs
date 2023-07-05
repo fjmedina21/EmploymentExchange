@@ -12,6 +12,5 @@ namespace EmploymentExchange.Models
         public string Email { get; set; }
         [Required, MinLength(8, ErrorMessage = "Password must be minimum 8 charaters"), MaxLength(100)]
         public string Password { get; set; }
-        public string? Photo { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<List<JobType>> GetJobTypesAsync()
         {
-            return await dbContext.JobTypes
+            return await dbContext.JobTypes.AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
                 .ToListAsync();
@@ -23,7 +23,7 @@ namespace EmploymentExchange.Repositories
 
         public async Task<JobType?> GetJobTypeByIdAsync(Guid id)
         {
-            JobType? jobType = await dbContext.JobTypes
+            JobType? jobType = await dbContext.JobTypes.AsNoTracking()
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
