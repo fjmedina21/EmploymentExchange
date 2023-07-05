@@ -24,7 +24,7 @@ namespace EmploymentExchange.Controllers
             LoggedInDTO? user = await authRepo.LogInAsync(login);
 
             if (user == null) return BadRequest(new APIResponse(400, false));
-
+            
             return Ok(new APIResponse(user));
         }
 

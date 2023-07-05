@@ -2,6 +2,6 @@
 {
     public class PGetUserRolesDTO
     {
-        public GetRoleDTO Role { get; set; }
+        public string Role { get; set; }
     }
 }

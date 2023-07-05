@@ -2,6 +2,7 @@
 {
     public class PGetRoleUsersDTO
     {
-        public GetUserDTO User { get; set; }
+        public Guid Id { get; set; }
+        public string Email { get; set; }
     }
 }

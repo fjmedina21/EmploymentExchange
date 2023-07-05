@@ -5,6 +5,6 @@ namespace EmploymentExchange.Repositories
     public interface IJWT
     {
         public string CreateJWT(User user);
-        public string ValidateJWT(string token);
+        public Task<List<string>> DecodeJWT(string token);
     }
 }

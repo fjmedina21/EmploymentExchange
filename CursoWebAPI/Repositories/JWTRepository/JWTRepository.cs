@@ -1,4 +1,6 @@
-﻿using EmploymentExchange.Models;
+﻿using AutoMapper;
+using EmploymentExchange.Models;
+using EmploymentExchange.Models.DTOs.Private;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,22 +11,25 @@ namespace EmploymentExchange.Repositories
     public class JWTRepository : IJWT
     {
         private readonly IConfiguration configuration;
+        private readonly IUser userRepo;
+        private readonly IMapper mapper;
 
-        public JWTRepository(IConfiguration configuration)
+        public JWTRepository(IConfiguration configuration, IUser userRepo, IMapper mapper)
         {
             this.configuration = configuration;
+            this.userRepo = userRepo;
+            this.mapper = mapper;
         }
 
         public string CreateJWT(User user)
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim("guid", user.Id.ToString()),
+                new Claim("id", user.Id.ToString()),
                 new Claim("email", user.Email)
             };
             
             SymmetricSecurityKey secretKey = new(E.UTF8.GetBytes(configuration["JWT:SecretKey"]));
-
             SigningCredentials credentials = new(secretKey, SecurityAlgorithms.HmacSha512Signature);
 
             JwtSecurityToken token = new(
@@ -36,9 +41,19 @@ namespace EmploymentExchange.Repositories
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string ValidateJWT(string token)
+        public async Task<List<string>> DecodeJWT(string token)
         {
-            throw new NotImplementedException();
+            string[] bearer = token.Split(" ");
+            JwtSecurityToken jwt = new JwtSecurityTokenHandler().ReadJwtToken(bearer[1]);
+            Guid guid = Guid.Parse(jwt.Claims.First(c => c.Type == "id").Value);
+            string email = jwt.Claims.First(c => c.Type == "email").Value;
+            List<string> roles = new();
+
+            User? user = await userRepo.GetUserByIdAsync(guid);
+            PGetUserDTO userDTO = mapper.Map<PGetUserDTO>(user);
+            userDTO.Roles.ForEach(r => roles.Add(r.Role.ToLower().Trim() ));
+            
+            return roles;
         }
     }
 }
