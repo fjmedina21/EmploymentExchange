@@ -23,11 +23,16 @@ namespace EmploymentExchange.Repositories
 
         public string CreateJWT(User user)
         {
+            /*List<string> roles;
+            PGetUserDTO userDTO = mapper.Map<PGetUserDTO>(user);
+            userDTO.Roles.ForEach(r => roles.Add(r.Role.ToLower().Trim() ));*/
+        
             List<Claim> claims = new List<Claim>
             {
-                new Claim("id", user.Id.ToString()),
-                new Claim("email", user.Email)
+                new Claim(ClaimTypes.Email, user.Email)
             };
+
+            //foreach(string role in roles) claims.Add(new Claim(ClaimTypes.Role, user.role));
             
             SymmetricSecurityKey secretKey = new(E.UTF8.GetBytes(configuration["JWT:SecretKey"]));
             SigningCredentials credentials = new(secretKey, SecurityAlgorithms.HmacSha512Signature);
