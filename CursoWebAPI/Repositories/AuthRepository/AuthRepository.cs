@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using EmploymentExchange.Data;
 using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmploymentExchange.Repositories
@@ -27,7 +26,7 @@ namespace EmploymentExchange.Repositories
             if (user == null || !user.ComparePassword(login.Password)) return null;
 
             LoggedInDTO loggedin = mapper.Map<LoggedInDTO>(user);
-            loggedin.token = jwt.CreateJWT(user);
+            loggedin.token = await jwt.CreateJWTAsync(user);
 
             return loggedin;
         }

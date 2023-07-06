@@ -10,7 +10,8 @@ namespace EmploymentExchange
         public MappingProfiles()
         {
             CreateMap<LoginDTO, User>();
-            CreateMap<User, LoggedInDTO>();
+            CreateMap<User, LoggedInDTO>()
+               ;
             
 
             CreateMap<UserDTO, User>();

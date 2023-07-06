@@ -10,5 +10,7 @@ namespace EmploymentExchange.Repositories
         Task<User> CreateUserAsync(User user);
         Task<User?> UpdateUserAsync(Guid id, User user);
         Task<User?> DeleteUserAsync(Guid id);
+        Task<User?> AssignRoleeAsync(Guid id);
+        Task<User?> RevokeRoleeAsync(Guid id);
     }
 }

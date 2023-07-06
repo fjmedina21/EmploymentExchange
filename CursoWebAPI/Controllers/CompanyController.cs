@@ -9,7 +9,6 @@ namespace EmploymentExchange.Controllers
 {
     [Route("companies")]
     [ApiController]
-    [Authorize]
     public class CompanyController : ControllerBase
     {
         private readonly ICompany companyRepo;
@@ -21,6 +20,7 @@ namespace EmploymentExchange.Controllers
             this.mapper = mapper;
         }
 
+        //public
         [HttpGet]
         public async Task<IActionResult> GetCompanies()
         {
@@ -30,6 +30,7 @@ namespace EmploymentExchange.Controllers
             return Ok(new APIResponse(ReadCompanyDTO)); 
         }
 
+        //public
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetCompanyById([FromRoute] Guid id)
@@ -44,6 +45,7 @@ namespace EmploymentExchange.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyDTO companyDTO)
         {
             Company company = mapper.Map<Company>(companyDTO);
@@ -56,6 +58,7 @@ namespace EmploymentExchange.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> UpdateCompany([FromRoute] Guid id, [FromBody] CompanyDTO companyDTO)
         {
             Company? company = mapper.Map<Company>(companyDTO);
@@ -70,6 +73,7 @@ namespace EmploymentExchange.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> DeleteCompany([FromRoute] Guid id)
         {
             Company? company = await companyRepo.DeleteCompanyAsync(id);

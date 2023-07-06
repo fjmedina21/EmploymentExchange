@@ -9,7 +9,7 @@ namespace EmploymentExchange.Controllers
 {
     [Route("roles")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "admin")]
     public class RoleController : ControllerBase
     {
         private readonly IRole roleRepo;

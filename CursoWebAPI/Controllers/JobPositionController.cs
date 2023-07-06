@@ -9,7 +9,7 @@ namespace EmploymentExchange.Controllers
 {
     [Route("jobpositions")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "admin")]
     public class JobPositionController : ControllerBase
     {
         private readonly IJobPosition jobPositionRepo;
@@ -24,6 +24,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "poster")]
         public async Task<IActionResult> GetJobPositions([FromQuery] string? category)
         {
             List<JobPosition> jobPositions = await jobPositionRepo.GetJobPositionsAsync(category);

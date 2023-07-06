@@ -4,7 +4,7 @@ namespace EmploymentExchange.Repositories
 {
     public interface IJWT
     {
-        public string CreateJWT(User user);
-        public Task<List<string>> DecodeJWT(string token);
+        public Task<string> CreateJWTAsync(User user);
+        //public Task<List<string>> DecodeJWT(string token);
     }
 }

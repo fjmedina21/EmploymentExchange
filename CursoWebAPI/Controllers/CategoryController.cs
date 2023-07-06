@@ -9,7 +9,7 @@ namespace EmploymentExchange.Controllers
 {
     [Route("categories")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategory categoryRepo;
@@ -22,6 +22,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "poster")]
         public async Task<IActionResult> GetCategories()
         {
             List<Category> categories = await categoryRepo.GetCategoriesAsync();

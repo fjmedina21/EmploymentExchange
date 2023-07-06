@@ -9,7 +9,6 @@ namespace EmploymentExchange.Controllers
 {
     [Route("jobs")]
     [ApiController]
-    [Authorize]
     public class JobController : ControllerBase
     {
         private readonly IJob jobRepo;
@@ -21,6 +20,7 @@ namespace EmploymentExchange.Controllers
             this.mapper = mapper;
         }
 
+        //public
         [HttpGet]
         public async Task<IActionResult> GetJobs([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -30,6 +30,7 @@ namespace EmploymentExchange.Controllers
             return Ok(new APIResponse(ReadJobsDTO));
         }
 
+        //public
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetJobById([FromRoute] Guid id)
@@ -43,6 +44,7 @@ namespace EmploymentExchange.Controllers
             return Ok(new APIResponse(ReadJobDTO));
         }
 
+        //public
         [HttpGet]
         [Route("{category}")]
         public async Task<IActionResult> GetJobsByCategory([FromRoute] string category, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
@@ -55,6 +57,7 @@ namespace EmploymentExchange.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> CreateJob([FromBody] JobDTO jobDTO)
         {
             Job job = mapper.Map<Job>(jobDTO);
@@ -67,6 +70,7 @@ namespace EmploymentExchange.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> UpdateJobType([FromRoute] Guid id, [FromBody] JobDTO jobDTO)
         {
             Job? job = mapper.Map<Job>(jobDTO);
@@ -81,6 +85,7 @@ namespace EmploymentExchange.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> DeleteJobType([FromRoute] Guid id)
         {
             Job? job = await jobRepo.DeleteJobAsync(id);

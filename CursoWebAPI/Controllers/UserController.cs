@@ -9,7 +9,6 @@ namespace EmploymentExchange.Controllers
 {
     [Route("users")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUser userRepo;
@@ -21,6 +20,7 @@ namespace EmploymentExchange.Controllers
             this.mapper = mapper;
         }
 
+        //public
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
         {
@@ -30,6 +30,7 @@ namespace EmploymentExchange.Controllers
             return Ok(new APIResponse(ReadUsersDTO)); 
         }
 
+        //public
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
@@ -45,6 +46,7 @@ namespace EmploymentExchange.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO userDTO)
         {
             User user = mapper.Map<User>(userDTO);
@@ -57,6 +59,7 @@ namespace EmploymentExchange.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize]
         public async Task<IActionResult> Updateuser([FromRoute] Guid id, [FromBody] UserDTO userDTO)
         {
             User? user = mapper.Map<User>(userDTO);
@@ -71,6 +74,7 @@ namespace EmploymentExchange.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize]
         public async Task<IActionResult> Deleteuser([FromRoute] Guid id)
         {
             User? user = await userRepo.DeleteUserAsync(id);
