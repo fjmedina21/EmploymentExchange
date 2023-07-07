@@ -13,7 +13,7 @@ namespace EmploymentExchange.Models
         public Guid JobTypeId { get; set; }
         [Required, ForeignKey(nameof(JobPositionId))]
         public Guid JobPositionId { get; set; }
-        [Required]
+        [Required, Column(TypeName = "decimal(9,2)")]
         public decimal Salary { get; set; }
         [Column(TypeName = "ntext")]
         public string? Description { get; set; }

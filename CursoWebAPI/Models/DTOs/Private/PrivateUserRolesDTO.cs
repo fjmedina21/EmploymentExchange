@@ -1,6 +1,6 @@
 ﻿namespace EmploymentExchange.Models.DTOs.Private
 {
-    public class PGetUserRolesDTO
+    public class PrivateUserRolesDTO
     {
         public string Role { get; set; }
     }

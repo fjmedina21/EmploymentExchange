@@ -1,9 +1,9 @@
 ﻿namespace EmploymentExchange.Models.DTOs.Private
 {
-    public class PGetUserDTO
+    public class PrivateUserDTO
     {
         public Guid Id { get; set; }
         public string Email { get; set; }
-        public List<PGetUserRolesDTO> Roles { get; set; }
+        public List<PrivateUserRolesDTO> Roles { get; set; }
     }
 }

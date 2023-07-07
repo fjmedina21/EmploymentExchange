@@ -9,19 +9,15 @@ namespace EmploymentExchange
     {
         public MappingProfiles()
         {
-            CreateMap<LoginDTO, User>();
-            CreateMap<User, LoggedInDTO>()
-               ;
-            
-
+            CreateMap<LoginDTO, User>();           
             CreateMap<UserDTO, User>();
             CreateMap<User, GetUserDTO>();             
-            CreateMap<User, PGetUserDTO>()
+            CreateMap<User, PrivateUserDTO>()
                 .ForMember(e => e.Roles, e => e.MapFrom(x => x.RoleUser));
 
             ///////////////////////////////////////////////////////////////////////////
             // Many to Many : RoleUSer
-            CreateMap<RoleUser, PGetUserRolesDTO>()
+            CreateMap<RoleUser, PrivateUserRolesDTO>()
                 .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles.Name));
             //CreateMap<RoleUser, PGetRoleUsersDTO>()
             //    .ForMember(e => e.Id, e => e.MapFrom(x => x.Users.Id))
@@ -31,7 +27,7 @@ namespace EmploymentExchange
          
             CreateMap<RoleDTO, Role>();
             CreateMap<Role, GetRoleDTO>();
-            CreateMap<Role, PGetRoleDTO>()
+            CreateMap<Role, PrivateRoleDTO>()
                 .ForMember(e => e.Users, e => e.MapFrom(x => x.RoleUser));
 
             CreateMap<JobTypeDTO, JobType>();

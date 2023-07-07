@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Middlewares;
+using EmploymentExchange.Helpers;
 using EmploymentExchange.Models;
 using EmploymentExchange.Repositories;
 using Microsoft.AspNetCore.Authorization;

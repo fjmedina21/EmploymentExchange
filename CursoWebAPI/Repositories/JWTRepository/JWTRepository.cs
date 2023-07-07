@@ -24,9 +24,9 @@ namespace EmploymentExchange.Repositories
         public async Task<string> CreateJWTAsync(User user)
         {
             List<string> roles = new();
-            User? entiyty = await userRepo.GetUserByIdAsync(user.Id);
-            PGetUserDTO entiytyDTO = mapper.Map<PGetUserDTO>(entiyty);
-            entiytyDTO.Roles.ForEach(r => roles.Add(r.Role.ToLower().Trim() ));
+            User? entity = await userRepo.GetUserByIdAsync(user.Id);
+            PrivateUserDTO PrivateUserDTO = mapper.Map<PrivateUserDTO>(entity);
+            PrivateUserDTO.Roles.ForEach(r => roles.Add(r.Role.ToLower().Trim() ));
 
             List<Claim> claims = new List<Claim> {
                 new Claim(ClaimTypes.Email, user.Email)

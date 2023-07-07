@@ -1,4 +1,4 @@
-﻿using EmploymentExchange.Middlewares;
+﻿using EmploymentExchange.Helpers;
 using EmploymentExchange.Models;
 using EmploymentExchange.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -21,10 +21,11 @@ namespace EmploymentExchange.Controllers
         [ValidateModel]
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
-            LoggedInDTO? user = await authRepo.LogInAsync(login);
+            var (user, token) = await authRepo.LogInAsync(login);
 
             if (user == null) return BadRequest(new APIResponse(400, false));
             
+            Response.Headers.Authorization = token;
             return Ok(new APIResponse(user));
         }
 

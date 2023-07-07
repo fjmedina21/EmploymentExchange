@@ -1,13 +1,24 @@
 using EmploymentExchange;
 using EmploymentExchange.Data;
 using EmploymentExchange.Repositories;
+using EmploymentExchange.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RH = System.Text.Json.Serialization.ReferenceHandler;
 using E = System.Text.Encoding;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File(path: "Logs/log.txt", rollingInterval: RollingInterval.Day)
+    .MinimumLevel.Warning()
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddCors( 
     options => { options.AddDefaultPolicy( 
@@ -73,6 +84,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<GlobalErrorHandler>();
 
 //app.UseResponseCaching();
 app.UseHttpsRedirection();
