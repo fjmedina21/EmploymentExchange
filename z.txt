@@ -1,0 +1,16 @@
+Install Package
+serilog
+serilog.aspnetcore
+serilog.siks.(console-file)
+
+usign Serilog;
+var logger = new LoggerConfiguration()
+	.WriteTo.Console()
+	.WriteTo.File()
+	.MinimunLevel.Warning( path:"Logs\log.txt",rollingInterval: RollingInterval.Day )
+	.CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+
+app.UseMiddlewares<T>();
