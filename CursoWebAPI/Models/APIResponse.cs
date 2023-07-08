@@ -7,6 +7,8 @@
         public int Total { get; set; } = 0;
         public object Data { get; set; } = new();
 
+        public APIResponse(){ }
+
         public APIResponse(object Data, int Total)
         {
             this.Total = Total;
@@ -23,13 +25,6 @@
         {
             this.Ok = Ok;
             this.StatusCode = StatusCode;
-        }
-
-        public APIResponse(object Data, int StatusCode, bool Ok)
-        {
-            this.Ok = Ok;
-            this.StatusCode = StatusCode;
-            this.Data = Data;
         }
     }
 }

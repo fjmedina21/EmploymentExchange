@@ -22,12 +22,21 @@ namespace EmploymentExchange.Middlewares
             }
             catch (Exception ex)
             {
-                Guid ErrorId = Guid.NewGuid();
-                logger.LogError(ex, $"{ErrorId} : {ex.Message}");
+                Guid TraceId = Guid.NewGuid();
+                logger.LogError(ex, $"{TraceId} : {ex.Message}");
                 httpContent.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                
-                object error = new { ErrorId, ErrorMessage = "Something went wrong"};
-                await httpContent.Response.WriteAsJsonAsync(new APIResponse(error, 500, false));
+
+                object error = new { TraceId, ErrorMessage = "Internal Error"};
+
+                APIResponse response = new()
+                {
+                    Ok = false,
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Total = 1,
+                    Data = error
+                };
+
+                await httpContent.Response.WriteAsJsonAsync(response);
             }
         }
 
