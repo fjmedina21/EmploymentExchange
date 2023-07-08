@@ -27,14 +27,14 @@ namespace EmploymentExchange.Controllers
         [Authorize(Roles = "poster")]
         public async Task<IActionResult> GetJobPositions([FromQuery] string? category)
         {
-            List<JobPosition> jobPositions = await jobPositionRepo.GetJobPositionsAsync(category);
+            var (jobPositions, total )= await jobPositionRepo.GetJobPositionsAsync(category);
             List<GetJobPositionDTO> ReadJobPositionDTO = mapper.Map<List<GetJobPositionDTO>>(jobPositions);
 
-            return Ok(new APIResponse(ReadJobPositionDTO));
+            return Ok(new APIResponse(ReadJobPositionDTO, total));
         }
 
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetJobPositionById([FromRoute] Guid id)
         {
             JobPosition? jobPosition = await jobPositionRepo.GetJobPositionByIdAsync(id);
@@ -62,7 +62,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpPut]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateJobPosition([FromRoute] Guid id, [FromBody] JobPositionDTO jobPositionDTO)
         {
@@ -77,7 +77,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> DeleteJobPosition([FromRoute] Guid id)
         {
             JobPosition? jobPosition = await jobPositionRepo.DeleteJobPositionAsync(id);

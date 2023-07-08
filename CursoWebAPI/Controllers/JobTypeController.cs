@@ -25,14 +25,14 @@ namespace EmploymentExchange.Controllers
         [Authorize(Roles = "poster")]
         public async Task<IActionResult> GetJobTypes()
         {
-            List<JobType> jobTypes = await jobTypeRepo.GetJobTypesAsync();
+            var (jobTypes, total) = await jobTypeRepo.GetJobTypesAsync();
             List<GetJobTypeDTO> ReadJobTypeDTO = mapper.Map<List<GetJobTypeDTO>>(jobTypes);
 
-            return Ok(new APIResponse(ReadJobTypeDTO));
+            return Ok(new APIResponse(ReadJobTypeDTO, total));
         }
 
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetJobTypeById([FromRoute] Guid id)
         {
             JobType? jobType = await jobTypeRepo.GetJobTypeByIdAsync(id);
@@ -56,7 +56,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpPut]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateJobType([FromRoute] Guid id, [FromBody] JobTypeDTO jobTypeDTO)
         {
@@ -71,7 +71,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> DeleteJobType([FromRoute] Guid id)
         {
             JobType? jobType = await jobTypeRepo.DeleteJobTypeAsync(id);

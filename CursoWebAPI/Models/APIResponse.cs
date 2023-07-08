@@ -2,14 +2,20 @@
 {
     public class APIResponse
     {
-        public bool Ok { get; set; }
-        public int StatusCode { get; set; }
-        public object Data { get; set; }
+        public bool Ok { get; set; } = true;
+        public int StatusCode { get; set; } = 200;
+        public int Total { get; set; } = 0;
+        public object Data { get; set; } = new();
 
-        public APIResponse(object Data, int StatusCode = 200 , bool Ok = true)
+        public APIResponse(object Data, int Total)
         {
-            this.Ok = Ok;
-            this.StatusCode = StatusCode;
+            this.Total = Total;
+            this.Data = Data;
+        }
+
+        public APIResponse( object Data)
+        {
+            this.Total = 1;
             this.Data = Data;
         }
 
@@ -17,7 +23,13 @@
         {
             this.Ok = Ok;
             this.StatusCode = StatusCode;
-            this.Data = new();
+        }
+
+        public APIResponse(object Data, int StatusCode, bool Ok)
+        {
+            this.Ok = Ok;
+            this.StatusCode = StatusCode;
+            this.Data = Data;
         }
     }
 }

@@ -13,17 +13,19 @@ namespace EmploymentExchange.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Company>> GetCompaniesAsync(int pageNumber = 1, int pageSize = 50)
+        public async Task<(List<Company>, int)> GetCompaniesAsync(int pageNumber = 1, int pageSize = 50)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
 
             IQueryable<Company> companies = dbContext.Companies.AsNoTracking()
                 .Where(e => e.State)
-                .Skip(skipResults).Take(pageSize)
                 .AsQueryable();
 
-            return await companies.ToListAsync();
+            List<Company> result = await companies.Skip(skipResults).Take(pageSize).ToListAsync();
+            int total = companies.Count();
+
+            return (result, total);
         }
 
         public async Task<Company?> GetCompanyByIdAsync(Guid id)

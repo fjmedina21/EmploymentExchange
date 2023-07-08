@@ -4,7 +4,7 @@ namespace EmploymentExchange.Repositories
 {
     public interface IJobPosition
     {
-        Task<List<JobPosition>> GetJobPositionsAsync(string? category = null);
+        Task<(List<JobPosition>,int)> GetJobPositionsAsync(string? category = null);
         Task<JobPosition?> GetJobPositionByIdAsync(Guid id);
         Task<JobPosition> CreateJobPositionAsync(JobPosition jobPosition);
         Task<JobPosition?> UpdateJobPositionAsync(Guid id, JobPosition jobPosition);

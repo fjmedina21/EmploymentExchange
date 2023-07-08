@@ -13,7 +13,7 @@ namespace EmploymentExchange.Repositories
             dbContext = dBContext;
         }
 
-        public async Task<List<User>> GetUsersAsync(int pageNumber = 1, int pageSize = 50)
+        public async Task<(List<User>,int)> GetUsersAsync(int pageNumber = 1, int pageSize = 50)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
@@ -21,11 +21,13 @@ namespace EmploymentExchange.Repositories
             IQueryable<User> users = dbContext.Users.AsNoTracking()
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
                 .Where(e => e.State)
-                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
-                .Skip(skipResults).Take(pageSize)
+                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)              
                 .AsQueryable();
 
-            return await users.ToListAsync();
+            List<User> result = await users.Skip(skipResults).Take(pageSize).ToListAsync();
+            int total = users.Count();
+
+            return (result, total);
         }
 
         public async Task<User?> GetUserByIdAsync(Guid id)

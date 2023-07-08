@@ -25,7 +25,7 @@ namespace EmploymentExchange.Middlewares
                 Guid ErrorId = Guid.NewGuid();
                 logger.LogError(ex, $"{ErrorId} : {ex.Message}");
                 httpContent.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
+                
                 object error = new { ErrorId, ErrorMessage = "Something went wrong"};
                 await httpContent.Response.WriteAsJsonAsync(new APIResponse(error, 500, false));
             }

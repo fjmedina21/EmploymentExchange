@@ -13,12 +13,17 @@ namespace EmploymentExchange.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<JobType>> GetJobTypesAsync()
+        public async Task<(List<JobType>, int)> GetJobTypesAsync()
         {
-            return await dbContext.JobTypes.AsNoTracking()
+            IQueryable<JobType> jobTypes = dbContext.JobTypes.AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
-                .ToListAsync();
+                .AsQueryable();
+
+            List<JobType> result = await jobTypes.ToListAsync();
+            int total = jobTypes.Count();
+
+            return (result, total);
         }
 
         public async Task<JobType?> GetJobTypeByIdAsync(Guid id)

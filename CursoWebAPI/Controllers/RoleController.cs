@@ -24,14 +24,14 @@ namespace EmploymentExchange.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
-            List<Role> roles = await roleRepo.GetRolesAsync();
+            var (roles, total) = await roleRepo.GetRolesAsync();
             List<GetRoleDTO> ReadRolesDTO = mapper.Map<List<GetRoleDTO>>(roles);
 
-            return Ok(new APIResponse(ReadRolesDTO));
+            return Ok(new APIResponse(ReadRolesDTO,total));
         }
 
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetRoleById([FromRoute] Guid id)
         {
             Role? role = await roleRepo.GetRoleByIdAsync(id);
@@ -55,7 +55,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpPut]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateRole([FromRoute] Guid id, [FromBody] RoleDTO roleDTO)
         {
@@ -70,7 +70,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> DeleteRole([FromRoute] Guid id)
         {
             Role? role = await roleRepo.DeleteRoleAsync(id);

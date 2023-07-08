@@ -13,12 +13,18 @@ namespace EmploymentExchange.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Category>> GetCategoriesAsync()
+        public async Task<(List<Category>, int)> GetCategoriesAsync()
         {
-            return await dbContext.Categories.AsNoTracking()
+
+            IQueryable<Category> categories = dbContext.Categories.AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
-                .ToListAsync();
+                .AsQueryable();
+
+            List<Category> result = await categories.ToListAsync();
+            int total = categories.Count();
+
+            return (result, total);
         }
 
         public async Task<Category?> GetCategoryByIdAsync(Guid id)

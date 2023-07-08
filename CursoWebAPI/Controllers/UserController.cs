@@ -24,15 +24,15 @@ namespace EmploymentExchange.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
-            List<User> users = await userRepo.GetUsersAsync(pageNumber, pageSize);
+            var (users, total)= await userRepo.GetUsersAsync(pageNumber, pageSize);
             List<GetUserDTO> ReadUsersDTO = mapper.Map<List<GetUserDTO>>(users);
 
-            return Ok(new APIResponse(ReadUsersDTO)); 
+            return Ok(new APIResponse(ReadUsersDTO, total)); 
         }
 
         //public
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             User? user = await userRepo.GetUserByIdAsync(id);
@@ -57,7 +57,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpPut]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [ValidateModel]
         [Authorize]
         public async Task<IActionResult> Updateuser([FromRoute] Guid id, [FromBody] UserDTO userDTO)
@@ -73,7 +73,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [Authorize]
         public async Task<IActionResult> Deleteuser([FromRoute] Guid id)
         {

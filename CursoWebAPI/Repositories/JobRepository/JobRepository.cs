@@ -13,7 +13,7 @@ namespace EmploymentExchange.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<Job>> GetJobsAsync(int pageNumber = 1, int pageSize = 10, string? filterOn = null, string? filterQuery = null)
+        public async Task<(List<Job>,int)> GetJobsAsync(int pageNumber = 1, int pageSize = 10, string? filterOn = null, string? filterQuery = null)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
@@ -24,7 +24,6 @@ namespace EmploymentExchange.Repositories
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
                 .Include(e => e.JobPosition).ThenInclude(e => e.Category)
                 .Include(e => e.JobType).Include(e => e.Company)
-                .Skip(skipResults).Take(pageSize)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
@@ -50,7 +49,10 @@ namespace EmploymentExchange.Repositories
                 }
             }
 
-            return await jobs.ToListAsync();
+            List<Job> result = await jobs.Skip(skipResults).Take(pageSize).ToListAsync();
+            int total = jobs.Count();
+
+            return (result, total);
         }
 
         public async Task<Job?> GetJobByIdAsync(Guid id)

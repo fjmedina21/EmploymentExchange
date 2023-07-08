@@ -4,7 +4,7 @@ namespace EmploymentExchange.Repositories
 {
     public interface IJob
     {
-        Task<List<Job>> GetJobsAsync(int pageNumber, int pageSize, string? filterOn, string? filterQuery);
+        Task<(List<Job>, int)> GetJobsAsync(int pageNumber, int pageSize, string? filterOn, string? filterQuery);
         Task<Job?> GetJobByIdAsync(Guid id);
         Task<List<Job>?> GetJobsByCategoryAsync(string category, int pageNumber, int pageSize);
         Task<Job> CreateJobAsync(Job job);

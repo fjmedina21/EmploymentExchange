@@ -24,15 +24,15 @@ namespace EmploymentExchange.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCompanies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
-            List<Company> Companies = await companyRepo.GetCompaniesAsync(pageNumber, pageSize);
-            List<GetCompanyDTO> ReadCompanyDTO = mapper.Map<List<GetCompanyDTO>>(Companies);
+            var (companies, total) = await companyRepo.GetCompaniesAsync(pageNumber, pageSize);
+            List<GetCompanyDTO> ReadCompanyDTO = mapper.Map<List<GetCompanyDTO>>(companies);
 
-            return Ok(new APIResponse(ReadCompanyDTO)); 
+            return Ok(new APIResponse(ReadCompanyDTO, total)); 
         }
 
         //public
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetCompanyById([FromRoute] Guid id)
         {
             Company? company = await companyRepo.GetCompanyByIdAsync(id);
@@ -56,7 +56,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpPut]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [ValidateModel]
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> UpdateCompany([FromRoute] Guid id, [FromBody] CompanyDTO companyDTO)
@@ -72,7 +72,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> DeleteCompany([FromRoute] Guid id)
         {

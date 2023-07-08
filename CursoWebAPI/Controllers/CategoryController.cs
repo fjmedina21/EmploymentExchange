@@ -25,14 +25,14 @@ namespace EmploymentExchange.Controllers
         [Authorize(Roles = "poster")]
         public async Task<IActionResult> GetCategories()
         {
-            List<Category> categories = await categoryRepo.GetCategoriesAsync();
+            var (categories, total) = await categoryRepo.GetCategoriesAsync();
             List<GetCategoryDTO> ReadCategoryDTO = mapper.Map<List<GetCategoryDTO>>(categories);
 
-            return Ok(new APIResponse(ReadCategoryDTO)); ;
+            return Ok(new APIResponse(ReadCategoryDTO, total)); ;
         }
 
         [HttpGet]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             Category? category = await categoryRepo.GetCategoryByIdAsync(id);
@@ -55,7 +55,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpPut]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryDTO categoryDTO)
         {
@@ -70,7 +70,7 @@ namespace EmploymentExchange.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:Guid}")]
+        [Route("{id}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
             Category? category = await categoryRepo.DeleteCategoryAsync(id);

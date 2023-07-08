@@ -13,7 +13,7 @@ namespace EmploymentExchange.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<List<JobPosition>> GetJobPositionsAsync(string? category)
+        public async Task<(List<JobPosition>,int)> GetJobPositionsAsync(string? category)
         {
             IQueryable<JobPosition> jobPosition = dbContext.JobPositions.AsNoTracking()
                 .Where(e => e.State).Where(e => e.Category.State)
@@ -26,7 +26,10 @@ namespace EmploymentExchange.Repositories
                     .Where(e => e.Category.Name.Equals(category));
             }
 
-            return await jobPosition.ToListAsync();
+            List<JobPosition> result = await jobPosition.ToListAsync();
+            int total = jobPosition.Count();
+
+            return (result, total);
         }
 
         public async Task<JobPosition?> GetJobPositionByIdAsync(Guid id)

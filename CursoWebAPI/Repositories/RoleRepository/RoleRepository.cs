@@ -13,13 +13,18 @@ namespace EmploymentExchange.Repositories
             dbContext = dBContext;
         }
 
-        public async Task<List<Role>> GetRolesAsync()
+        public async Task<(List<Role>, int)> GetRolesAsync()
         {
-            return await dbContext.Roles.AsNoTracking()
+            IQueryable<Role> roles = dbContext.Roles.AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
                 //.Include(e => e.RoleUser).ThenInclude(e => e.Users)
-                .ToListAsync();
+                .AsQueryable();
+
+            List<Role> result = await roles.ToListAsync();
+            int total = roles.Count();
+
+            return (result, total);
         }
 
         public async Task<Role?> GetRoleByIdAsync(Guid id)
