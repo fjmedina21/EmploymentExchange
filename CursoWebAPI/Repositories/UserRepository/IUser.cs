@@ -1,5 +1,4 @@
 ﻿using EmploymentExchange.Models;
-using Microsoft.AspNetCore.Mvc;
 
 namespace EmploymentExchange.Repositories
 {
@@ -10,7 +9,7 @@ namespace EmploymentExchange.Repositories
         Task<User> CreateUserAsync(User user);
         Task<User?> UpdateUserAsync(Guid id, User user);
         Task<User?> DeleteUserAsync(Guid id);
-        Task<User?> AssignRoleeAsync(Guid id);
-        Task<User?> RevokeRoleeAsync(Guid id);
+        Task<User> AssignRoleAsync(Guid id);
+        Task<User> RevokeRoleAsync(Guid id);
     }
 }

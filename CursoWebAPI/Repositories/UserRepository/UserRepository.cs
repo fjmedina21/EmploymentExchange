@@ -79,12 +79,12 @@ namespace EmploymentExchange.Repositories
             return userExist;
         }
 
-        public Task<User?> AssignRoleeAsync(Guid id)
+        public Task<User> AssignRoleAsync(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User?> RevokeRoleeAsync(Guid id)
+        public Task<User> RevokeRoleAsync(Guid id)
         {
             throw new NotImplementedException();
         }
