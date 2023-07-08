@@ -12,8 +12,6 @@
 *.user
 *.sln.docstates
 
-**/Migrations/*
-
 # Build results
 [Dd]ebug/
 [Rr]elease/
@@ -226,3 +224,5 @@ AppPackages/
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
+**/Migrations/*
+**/Logs/*

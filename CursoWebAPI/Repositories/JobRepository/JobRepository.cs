@@ -35,7 +35,7 @@ namespace EmploymentExchange.Repositories
                         jobs = jobs.Where(e => e.JobPosition.Category.Name
                         .Contains(filterQuery, StringComparison.OrdinalIgnoreCase));
                         break;
-                    case "jobposition":
+                    case "position":
                         jobs = jobs.Where(e => e.JobPosition.Name
                         .Contains(filterQuery, StringComparison.OrdinalIgnoreCase));
                         break;

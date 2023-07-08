@@ -22,9 +22,9 @@ namespace EmploymentExchange.Controllers
 
         //public
         [HttpGet]
-        public async Task<IActionResult> GetCompanies()
+        public async Task<IActionResult> GetCompanies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
-            List<Company> Companies = await companyRepo.GetCompaniesAsync();
+            List<Company> Companies = await companyRepo.GetCompaniesAsync(pageNumber, pageSize);
             List<GetCompanyDTO> ReadCompanyDTO = mapper.Map<List<GetCompanyDTO>>(Companies);
 
             return Ok(new APIResponse(ReadCompanyDTO)); 

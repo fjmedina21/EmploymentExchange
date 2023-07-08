@@ -4,7 +4,7 @@ namespace EmploymentExchange.Repositories
 {
     public interface IUser
     {
-        Task<List<User>> GetUsersAsync(int pageNumber = 1, int pageSize = 100);
+        Task<List<User>> GetUsersAsync(int pageNumber, int pageSize);
         Task<User?> GetUserByIdAsync(Guid id);
         Task<User> CreateUserAsync(User user);
         Task<User?> UpdateUserAsync(Guid id, User user);

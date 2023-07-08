@@ -22,9 +22,9 @@ namespace EmploymentExchange.Controllers
 
         //public
         [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
+        public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
-            List<User> users = await userRepo.GetUsersAsync();
+            List<User> users = await userRepo.GetUsersAsync(pageNumber, pageSize);
             List<GetUserDTO> ReadUsersDTO = mapper.Map<List<GetUserDTO>>(users);
 
             return Ok(new APIResponse(ReadUsersDTO)); 

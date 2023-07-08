@@ -13,7 +13,7 @@ namespace EmploymentExchange.Repositories
             dbContext = dBContext;
         }
 
-        public async Task<List<User>> GetUsersAsync(int pageNumber = 1, int pageSize = 100)
+        public async Task<List<User>> GetUsersAsync(int pageNumber = 1, int pageSize = 50)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
