@@ -15,6 +15,6 @@ namespace EmploymentExchange.Models
         public string Location { get; set; }
         public decimal Salary { get; set; }
         public string? Description { get; set; }
-        public DateTime? PublishedOn { get; set; }
+        public DateTime PublishedOn { get; set; }
     }
 }
