@@ -39,7 +39,7 @@ namespace EmploymentExchange.Repositories
 
             JwtSecurityToken token = new(
                 claims: claims,
-                expires: DateTime.Now.AddHours(12),
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: credentials
                 );
 

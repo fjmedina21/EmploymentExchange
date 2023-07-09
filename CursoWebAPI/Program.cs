@@ -5,6 +5,7 @@ using EmploymentExchange.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Mvc;
 using RH = System.Text.Json.Serialization.ReferenceHandler;
 using E = System.Text.Encoding;
 using Serilog;
@@ -21,21 +22,31 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AddCors( 
-    options => { options.AddDefaultPolicy( 
-            policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); 
+    options => 
+    { 
+        options.AddDefaultPolicy( 
+            policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             });
-    /*options.AddPolicy( "CustomPolicy",
+        /*options.AddPolicy( "CustomPolicy",
             policy => { policy.WithOrigins("http://example.com", "http://www.contoso.com")
                            .WithHeaders(HeaderNames.ContentType, "auth")
                            .WithMethods("POST", "PUT", "DELETE", "GET");
-            });
-    */
+            });*/
     }
 );
 
 // Add services to the container.
-builder.Services.AddControllers()
-    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = RH.IgnoreCycles);
+builder.Services.AddResponseCaching();
+builder.Services.AddControllers(option =>
+{
+    option.CacheProfiles.Add("Default", 
+        new CacheProfile()
+        {
+            Duration = 60*2,
+            Location = ResponseCacheLocation.Client
+        });
+}).AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = RH.IgnoreCycles);
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -60,11 +71,17 @@ builder.Services.AddScoped<IJobType, JobTypeRepository>();
 builder.Services.AddScoped<ICategory, CategoryRepository>();
 builder.Services.AddScoped<ICompany, CompanyRepository>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;   
+}
+)
     .AddJwtBearer(options => 
     {
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateIssuerSigningKey = true,
@@ -73,7 +90,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         //ValidAudiences = builder.Configuration["JWT:Audiences"]
         IssuerSigningKey = new SymmetricSecurityKey(
             E.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-    };
+        };
     });
 
 var app = builder.Build();
@@ -87,10 +104,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<GlobalErrorHandler>();
 
-//app.UseResponseCaching();
 app.UseHttpsRedirection();
 app.UseCors();
 //app.UseCors("CustomPolicy");
+app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

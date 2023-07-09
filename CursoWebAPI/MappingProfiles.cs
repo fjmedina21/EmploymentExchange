@@ -9,22 +9,23 @@ namespace EmploymentExchange
     {
         public MappingProfiles()
         {
+            ///////////////////////////////////////////////////////////////////////////
+            // Many to Many : RoleUSer
+            CreateMap<RoleUser, PrivateUserRolesDTO>()
+                .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles.Name));
+            
+            CreateMap<RoleUser, PrivateRoleUsersDTO>()
+                .ForMember(e => e.Id, e => e.MapFrom(x => x.Users.Id))
+                .ForMember(e => e.Email, e => e.MapFrom(x => x.Users.Email));
+
+            //////////////////////////////////////////////////////////////////////////
+            
             CreateMap<LoginDTO, User>();           
             CreateMap<UserDTO, User>();
             CreateMap<User, GetUserDTO>();             
             CreateMap<User, PrivateUserDTO>()
                 .ForMember(e => e.Roles, e => e.MapFrom(x => x.RoleUser));
 
-            ///////////////////////////////////////////////////////////////////////////
-            // Many to Many : RoleUSer
-            CreateMap<RoleUser, PrivateUserRolesDTO>()
-                .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles.Name));
-            //CreateMap<RoleUser, PGetRoleUsersDTO>()
-            //    .ForMember(e => e.Id, e => e.MapFrom(x => x.Users.Id))
-            //    .ForMember(e => e.Email, e => e.MapFrom(x => x.Users.Email));
-
-            //////////////////////////////////////////////////////////////////////////
-         
             CreateMap<RoleDTO, Role>();
             CreateMap<Role, GetRoleDTO>();
             CreateMap<Role, PrivateRoleDTO>()
