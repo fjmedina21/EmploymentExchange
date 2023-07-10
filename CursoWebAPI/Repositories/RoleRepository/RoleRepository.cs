@@ -73,5 +73,15 @@ namespace EmploymentExchangeAPI.Repositories
 
             return roleExist;
         }
+
+        /*public Task<User> AssignRoleAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> RevokeRoleAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }*/
     }
 }

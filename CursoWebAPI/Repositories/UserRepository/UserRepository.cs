@@ -51,20 +51,20 @@ namespace EmploymentExchangeAPI.Repositories
 
         public async Task<User?> UpdateUserAsync(Guid id, User user)
         {
-            User? dbUsers = await dbContext.Users
+            User? dbUser = await dbContext.Users
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbUsers == null || !dbUsers.ComparePassword(user.Password)) return null;
+            if (dbUser == null || !dbUser.ComparePassword(user.Password)) return null;
 
-            dbUsers.FirstName = user.FirstName;
-            dbUsers.LastName = user.LastName;
-            dbUsers.Email = user.Email;
-            dbUsers.Photo = user.Photo;
-            dbUsers.UpdatedAt = DateTime.Now;
+            dbUser.FirstName = user.FirstName;
+            dbUser.LastName = user.LastName;
+            dbUser.Email = user.Email;
+            dbUser.Photo = user.Photo;
+            dbUser.UpdatedAt = DateTime.Now;
             await dbContext.SaveChangesAsync();
 
-            return dbUsers;
+            return dbUser;
         }
 
         public async Task<User?> DeleteUserAsync(Guid id)
@@ -79,16 +79,6 @@ namespace EmploymentExchangeAPI.Repositories
             await dbContext.SaveChangesAsync();
 
             return userExist;
-        }
-
-        public Task<User> AssignRoleAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> RevokeRoleAsync(Guid id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
