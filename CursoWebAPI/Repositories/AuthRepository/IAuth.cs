@@ -1,10 +1,10 @@
-﻿using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Models;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public interface IAuth
     {
-        Task<(GetUserDTO?,string?)> LogInAsync(LoginDTO login);
+        Task<(GetUserDTO?, string?)> LogInAsync(LoginDTO login);
         Task<GetUserDTO> SignUpAsync();
         //Task<User> ChangePasswordAsync();
         //Task<User> ResetPasswordAsync();

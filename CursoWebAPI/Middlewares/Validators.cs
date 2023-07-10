@@ -1,4 +1,4 @@
-﻿namespace EmploymentExchange.Middlewares
+﻿namespace EmploymentExchangeAPI.Middlewares
 {
     public class Validators
     {

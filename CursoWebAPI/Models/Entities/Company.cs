@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EmploymentExchange.Models
+namespace EmploymentExchangeAPI.Models
 {
     public class Company
     {

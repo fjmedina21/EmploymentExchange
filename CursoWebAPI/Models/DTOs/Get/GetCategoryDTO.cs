@@ -1,4 +1,4 @@
-﻿namespace EmploymentExchange.Models
+﻿namespace EmploymentExchangeAPI.Models
 {
     public class GetCategoryDTO
     {

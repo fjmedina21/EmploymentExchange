@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Helpers;
-using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Helpers;
+using EmploymentExchangeAPI.Repositories;
 
-namespace EmploymentExchange.Controllers
+namespace EmploymentExchangeAPI.Controllers
 {
     [Route("jobtypes")]
     [ApiController]
-    [Authorize(Roles ="admin")]
+    [Authorize(Roles = "admin")]
     public class JobTypeController : ControllerBase
     {
         private readonly IJobType jobTypeRepo;
@@ -62,9 +62,9 @@ namespace EmploymentExchange.Controllers
         {
             JobType? jobType = mapper.Map<JobType>(jobTypeDTO);
             jobType = await jobTypeRepo.UpdateJobTypeAsync(id, jobType);
-            
+
             if (jobType == null) return NotFound(new APIResponse(404, false));
-            
+
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
             return Ok(new APIResponse(ReadJobTypeDTO));

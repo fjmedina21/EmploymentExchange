@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EmploymentExchange.Models
+namespace EmploymentExchangeAPI.Models
 {
     public class Category
     {

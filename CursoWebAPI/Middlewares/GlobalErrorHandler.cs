@@ -1,7 +1,7 @@
-﻿using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Models;
 using System.Net;
 
-namespace EmploymentExchange.Middlewares
+namespace EmploymentExchangeAPI.Middlewares
 {
     public class GlobalErrorHandler
     {
@@ -26,7 +26,7 @@ namespace EmploymentExchange.Middlewares
                 logger.LogError(ex, $"{TraceId} : {ex.Message}");
                 httpContent.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                object error = new { TraceId, ErrorMessage = "Internal Error"};
+                object error = new { TraceId, ErrorMessage = "Internal Error" };
 
                 APIResponse response = new()
                 {

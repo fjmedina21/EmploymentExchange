@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Helpers;
-using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Helpers;
+using EmploymentExchangeAPI.Repositories;
 
-namespace EmploymentExchange.Controllers
+namespace EmploymentExchangeAPI.Controllers
 {
     [Route("jobpositions")]
     [ApiController]
@@ -27,7 +27,7 @@ namespace EmploymentExchange.Controllers
         [Authorize(Roles = "poster")]
         public async Task<IActionResult> GetJobPositions([FromQuery] string? category)
         {
-            var (jobPositions, total )= await jobPositionRepo.GetJobPositionsAsync(category);
+            var (jobPositions, total) = await jobPositionRepo.GetJobPositionsAsync(category);
             List<GetJobPositionDTO> ReadJobPositionDTO = mapper.Map<List<GetJobPositionDTO>>(jobPositions);
 
             return Ok(new APIResponse(ReadJobPositionDTO, total));

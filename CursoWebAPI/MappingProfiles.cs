@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Models;
-using EmploymentExchange.Models.DTOs.Private;
-using EmploymentExchange.Models.Entities.ManyToMany;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Models.Private;
+using EmploymentExchangeAPI.Models.ManyToMany;
 
-namespace EmploymentExchange
+namespace EmploymentExchangeAPI
 {
     public class MappingProfiles : Profile
     {
@@ -13,16 +13,16 @@ namespace EmploymentExchange
             // Many to Many : RoleUSer
             CreateMap<RoleUser, PrivateUserRolesDTO>()
                 .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles.Name));
-            
+
             CreateMap<RoleUser, PrivateRoleUsersDTO>()
                 .ForMember(e => e.Id, e => e.MapFrom(x => x.Users.Id))
                 .ForMember(e => e.Email, e => e.MapFrom(x => x.Users.Email));
 
             //////////////////////////////////////////////////////////////////////////
-            
-            CreateMap<LoginDTO, User>();           
+
+            CreateMap<LoginDTO, User>();
             CreateMap<UserDTO, User>();
-            CreateMap<User, GetUserDTO>();             
+            CreateMap<User, GetUserDTO>();
             CreateMap<User, PrivateUserDTO>()
                 .ForMember(e => e.Roles, e => e.MapFrom(x => x.RoleUser));
 

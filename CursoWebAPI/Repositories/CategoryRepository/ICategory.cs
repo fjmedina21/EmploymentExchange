@@ -1,10 +1,10 @@
-﻿using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Models;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public interface ICategory
     {
-        Task<(List<Category>,int)> GetCategoriesAsync();
+        Task<(List<Category>, int)> GetCategoriesAsync();
         Task<Category?> GetCategoryByIdAsync(Guid id);
         Task<Category> CreateCategoryAsync(Category category);
         Task<Category?> UpdateCategoryAsync(Guid id, Category category);

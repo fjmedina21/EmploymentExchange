@@ -1,10 +1,10 @@
-﻿using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Models;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public interface IJobType
     {
-        Task<(List<JobType>,int)> GetJobTypesAsync();
+        Task<(List<JobType>, int)> GetJobTypesAsync();
         Task<JobType?> GetJobTypeByIdAsync(Guid id);
         Task<JobType> CreateJobTypeAsync(JobType jobType);
         Task<JobType?> UpdateJobTypeAsync(Guid id, JobType jobType);

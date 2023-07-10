@@ -1,10 +1,9 @@
-﻿using EmploymentExchange.Models.Entities.ManyToMany;
+﻿using EmploymentExchangeAPI.Models.ManyToMany;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using BC = BCrypt.Net.BCrypt;
 
-namespace EmploymentExchange.Models
+namespace EmploymentExchangeAPI.Models
 {
     [Index(nameof(Email), IsUnique = true, Name = "IX_Users_Email")]
     public class User
@@ -15,7 +14,7 @@ namespace EmploymentExchange.Models
         public string FirstName { get; set; }
         [Required, StringLength(30)]
         public string LastName { get; set; }
-        [Required, EmailAddress,StringLength(50)]
+        [Required, EmailAddress, StringLength(50)]
         public string Email { get; set; }
         [Required, MinLength(8), MaxLength(100)]
         public string Password { get; set; }
@@ -27,9 +26,9 @@ namespace EmploymentExchange.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<RoleUser> RoleUser { get; set; } 
-        public ICollection<Job> Jobs { get; set; } 
-        
+        public IList<RoleUser> RoleUser { get; set; }
+        public IList<JobUser> JobUser { get; set; }
+
         public string HashPassword(string password)
         {
             return Password = BC.EnhancedHashPassword(password, 15);

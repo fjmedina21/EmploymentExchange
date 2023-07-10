@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Helpers;
-using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Helpers;
+using EmploymentExchangeAPI.Repositories;
 
-namespace EmploymentExchange.Controllers
+namespace EmploymentExchangeAPI.Controllers
 {
     [Route("companies")]
     [ApiController]
@@ -27,7 +27,7 @@ namespace EmploymentExchange.Controllers
             var (companies, total) = await companyRepo.GetCompaniesAsync(pageNumber, pageSize);
             List<GetCompanyDTO> ReadCompanyDTO = mapper.Map<List<GetCompanyDTO>>(companies);
 
-            return Ok(new APIResponse(ReadCompanyDTO, total)); 
+            return Ok(new APIResponse(ReadCompanyDTO, total));
         }
 
         //public

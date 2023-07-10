@@ -1,8 +1,8 @@
-﻿using EmploymentExchange.Models.Entities.ManyToMany;
+﻿using EmploymentExchangeAPI.Models.ManyToMany;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EmploymentExchange.Models
+namespace EmploymentExchangeAPI.Models
 {
     public class Role
     {
@@ -19,6 +19,6 @@ namespace EmploymentExchange.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<RoleUser> RoleUser { get; set; } 
+        public IList<RoleUser> RoleUser { get; set; }
     }
 }

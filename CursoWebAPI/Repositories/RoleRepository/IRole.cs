@@ -1,10 +1,10 @@
-﻿using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Models;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public interface IRole
     {
-        Task<(List<Role>,int)> GetRolesAsync();
+        Task<(List<Role>, int)> GetRolesAsync();
         Task<Role?> GetRoleByIdAsync(Guid id);
         Task<Role> CreateRoleAsync(Role role);
         Task<Role?> UpdateRoleAsync(Guid id, Role role);

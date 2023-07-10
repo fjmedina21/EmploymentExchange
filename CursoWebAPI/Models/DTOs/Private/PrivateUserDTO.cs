@@ -1,4 +1,4 @@
-﻿namespace EmploymentExchange.Models.DTOs.Private
+﻿namespace EmploymentExchangeAPI.Models.Private
 {
     public class PrivateUserDTO
     {

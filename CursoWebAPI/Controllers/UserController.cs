@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Helpers;
-using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Helpers;
+using EmploymentExchangeAPI.Repositories;
 
-namespace EmploymentExchange.Controllers
+namespace EmploymentExchangeAPI.Controllers
 {
     [Route("users")]
     [ApiController]
@@ -24,10 +24,10 @@ namespace EmploymentExchange.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
-            var (users, total)= await userRepo.GetUsersAsync(pageNumber, pageSize);
+            var (users, total) = await userRepo.GetUsersAsync(pageNumber, pageSize);
             List<GetUserDTO> ReadUsersDTO = mapper.Map<List<GetUserDTO>>(users);
 
-            return Ok(new APIResponse(ReadUsersDTO, total)); 
+            return Ok(new APIResponse(ReadUsersDTO, total));
         }
 
         //public
@@ -36,7 +36,7 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             User? user = await userRepo.GetUserByIdAsync(id);
-        
+
             if (user == null) return NotFound(new APIResponse(404, false));
 
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);

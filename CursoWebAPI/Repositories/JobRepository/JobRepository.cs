@@ -1,8 +1,8 @@
-﻿using EmploymentExchange.Data;
-using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Data;
+using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public class JobRepository : IJob
     {
@@ -13,7 +13,7 @@ namespace EmploymentExchange.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<(List<Job>,int)> GetJobsAsync(int pageNumber = 1, int pageSize = 10, string? filterOn = null, string? filterQuery = null)
+        public async Task<(List<Job>, int)> GetJobsAsync(int pageNumber = 1, int pageSize = 10, string? filterOn = null, string? filterQuery = null)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;

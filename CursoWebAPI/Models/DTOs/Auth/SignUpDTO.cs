@@ -1,4 +1,4 @@
-﻿namespace EmploymentExchange.Models.Auth
+﻿namespace EmploymentExchangeAPI.Models
 {
     public class SignUpDTO
     {

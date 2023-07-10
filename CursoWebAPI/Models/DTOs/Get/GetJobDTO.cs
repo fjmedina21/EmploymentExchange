@@ -1,6 +1,4 @@
-﻿using EmploymentExchange.Models;
-
-namespace EmploymentExchange.Models
+﻿namespace EmploymentExchangeAPI.Models
 {
     public class GetJobDTO
     {

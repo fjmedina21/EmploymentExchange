@@ -1,8 +1,8 @@
-﻿using EmploymentExchange.Data;
-using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Data;
+using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public class JobPositionRepository : IJobPosition
     {
@@ -13,7 +13,7 @@ namespace EmploymentExchange.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<(List<JobPosition>,int)> GetJobPositionsAsync(string? category)
+        public async Task<(List<JobPosition>, int)> GetJobPositionsAsync(string? category)
         {
             IQueryable<JobPosition> jobPosition = dbContext.JobPositions.AsNoTracking()
                 .Where(e => e.State).Where(e => e.Category.State)

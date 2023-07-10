@@ -1,9 +1,9 @@
-﻿using EmploymentExchange.Helpers;
-using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Helpers;
+using EmploymentExchangeAPI.Repositories;
 
-namespace EmploymentExchange.Controllers
+namespace EmploymentExchangeAPI.Controllers
 {
     [Route("auth")]
     [ApiController]
@@ -24,7 +24,7 @@ namespace EmploymentExchange.Controllers
             var (user, token) = await authRepo.LogInAsync(login);
 
             if (user == null) return BadRequest(new APIResponse(400, false));
-            
+
             Response.Headers.Authorization = token;
             return Ok(new APIResponse(user));
         }

@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EmploymentExchangeAPI.Models.ManyToMany;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EmploymentExchange.Models
+namespace EmploymentExchangeAPI.Models
 {
     public class Job
     {
@@ -28,6 +29,6 @@ namespace EmploymentExchange.Models
         public JobType JobType { get; set; }
         public Company Company { get; set; }
 
-        public IList<User> Users { get; set; } = new List<User>();
+        public IList<JobUser> JobUser { get; set; }
     }
 }

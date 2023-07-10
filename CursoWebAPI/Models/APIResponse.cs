@@ -1,4 +1,4 @@
-﻿namespace EmploymentExchange.Models
+﻿namespace EmploymentExchangeAPI.Models
 {
     public class APIResponse
     {
@@ -7,7 +7,7 @@
         public int Total { get; set; } = 0;
         public object Data { get; set; } = new();
 
-        public APIResponse(){ }
+        public APIResponse() { }
 
         public APIResponse(object Data, int Total)
         {
@@ -15,9 +15,9 @@
             this.Data = Data;
         }
 
-        public APIResponse( object Data)
+        public APIResponse(object Data)
         {
-            this.Total = 1;
+            Total = 1;
             this.Data = Data;
         }
 

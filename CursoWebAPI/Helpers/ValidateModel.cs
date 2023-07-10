@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace EmploymentExchange.Helpers
+namespace EmploymentExchangeAPI.Helpers
 {
     public class ValidateModel : ActionFilterAttribute
     {

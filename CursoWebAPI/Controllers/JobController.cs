@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Helpers;
-using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Helpers;
+using EmploymentExchangeAPI.Repositories;
 
-namespace EmploymentExchange.Controllers
+namespace EmploymentExchangeAPI.Controllers
 {
     [Route("jobs")]
     [ApiController]
@@ -36,9 +36,9 @@ namespace EmploymentExchange.Controllers
         public async Task<IActionResult> GetJobById([FromRoute] Guid id)
         {
             Job? job = await jobRepo.GetJobByIdAsync(id);
-            
+
             if (job == null) return NotFound(new APIResponse(404, false));
-            
+
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
             return Ok(new APIResponse(ReadJobDTO));

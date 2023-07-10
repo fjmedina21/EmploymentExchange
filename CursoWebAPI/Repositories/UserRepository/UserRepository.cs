@@ -1,8 +1,8 @@
-﻿using EmploymentExchange.Data;
-using EmploymentExchange.Models;
+﻿using EmploymentExchangeAPI.Data;
+using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public class UserRepository : IUser
     {
@@ -13,7 +13,7 @@ namespace EmploymentExchange.Repositories
             dbContext = dBContext;
         }
 
-        public async Task<(List<User>,int)> GetUsersAsync(int pageNumber = 1, int pageSize = 50)
+        public async Task<(List<User>, int)> GetUsersAsync(int pageNumber = 1, int pageSize = 50)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
@@ -21,7 +21,7 @@ namespace EmploymentExchange.Repositories
             IQueryable<User> users = dbContext.Users.AsNoTracking()
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
                 .Where(e => e.State)
-                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)              
+                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
                 .AsQueryable();
 
             List<User> result = await users.Skip(skipResults).Take(pageSize).ToListAsync();

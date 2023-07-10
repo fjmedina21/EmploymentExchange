@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Data;
-using EmploymentExchange.Models;
+using EmploymentExchangeAPI.Data;
+using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmploymentExchange.Repositories
+namespace EmploymentExchangeAPI.Repositories
 {
     public class AuthRepository : IAuth
     {

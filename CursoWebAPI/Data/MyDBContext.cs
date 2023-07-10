@@ -1,8 +1,8 @@
-﻿using EmploymentExchange.Models;
-using EmploymentExchange.Models.Entities.ManyToMany;
+﻿using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Models.ManyToMany;
 using Microsoft.EntityFrameworkCore;
 
-namespace EmploymentExchange.Data
+namespace EmploymentExchangeAPI.Data
 {
     public class MyDBContext : DbContext
     {
@@ -23,6 +23,7 @@ namespace EmploymentExchange.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<RoleUser>().HasKey(e => new { e.RoleId, e.UserId });
+            modelBuilder.Entity<JobUser>().HasKey(e => new { e.JobId, e.UserId });
 
             List<JobType> defaultJobTypes = new List<JobType>();
             defaultJobTypes.Add(new JobType { Name = "Full-Time" });

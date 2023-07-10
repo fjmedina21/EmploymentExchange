@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using EmploymentExchange.Helpers;
-using EmploymentExchange.Models;
-using EmploymentExchange.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Helpers;
+using EmploymentExchangeAPI.Repositories;
 
-namespace EmploymentExchange.Controllers
+namespace EmploymentExchangeAPI.Controllers
 {
     [Route("roles")]
     [ApiController]
@@ -27,7 +27,7 @@ namespace EmploymentExchange.Controllers
             var (roles, total) = await roleRepo.GetRolesAsync();
             List<GetRoleDTO> ReadRolesDTO = mapper.Map<List<GetRoleDTO>>(roles);
 
-            return Ok(new APIResponse(ReadRolesDTO,total));
+            return Ok(new APIResponse(ReadRolesDTO, total));
         }
 
         [HttpGet]
@@ -51,7 +51,7 @@ namespace EmploymentExchange.Controllers
             role = await roleRepo.CreateRoleAsync(role);
             GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
-            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(ReadRoleDTO,201));
+            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(ReadRoleDTO, 201));
         }
 
         [HttpPut]
