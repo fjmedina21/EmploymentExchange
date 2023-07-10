@@ -53,10 +53,13 @@ namespace EmploymentExchangeAPI.Repositories
 
             Guid Id = Guid.Parse(jwt.Claims.First(c => c.Type == "id").Value);
             string Email = jwt.Claims.First(c => c.Type == "email").Value;
+            List<Claim> RolesClaim = jwt.Claims.Where(c => c.Type == "roles").ToList();
+            
+            List<string> Roles = new();
+            foreach (var role in RolesClaim) Role.Add(role.Value);
+            object jwtProp = new { Id, Email, Role };
 
-            object jwtProp = new { Id, Email };
-
-            return jwtProp;
+            return  jwtProp;
         }
     }
 }
