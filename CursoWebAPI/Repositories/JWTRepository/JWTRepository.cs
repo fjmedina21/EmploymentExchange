@@ -47,7 +47,7 @@ namespace EmploymentExchangeAPI.Repositories
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<object> DecodeJWT(string token)
+        public object DecodeJWT(string token)
         {
             JwtSecurityToken jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
 
