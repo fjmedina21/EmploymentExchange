@@ -32,15 +32,15 @@ namespace EmploymentExchangeAPI.Controllers
 
         //public
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             User? user = await userRepo.GetUserByIdAsync(id);
 
-            if (user == null) return NotFound(new APIResponse(404, false));
+            if (user is null) return BadRequest(new APIResponse(404, false));
 
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
-
+             
             return Ok(new APIResponse(ReadUserDTO));
         }
 
@@ -53,11 +53,11 @@ namespace EmploymentExchangeAPI.Controllers
             user = await userRepo.CreateUserAsync(user);
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(ReadUserDTO, 201));
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(ReadUserDTO) { StatusCode = 201});
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [ValidateModel]
         [Authorize]
         public async Task<IActionResult> Updateuser([FromRoute] Guid id, [FromBody] UserDTO userDTO)
@@ -65,7 +65,7 @@ namespace EmploymentExchangeAPI.Controllers
             User? user = mapper.Map<User>(userDTO);
             user = await userRepo.UpdateUserAsync(id, user);
 
-            if (user == null) return NotFound(new APIResponse(404, false));
+            if (user is null) return BadRequest(new APIResponse(400, false));
 
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
@@ -73,13 +73,13 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [Authorize]
         public async Task<IActionResult> Deleteuser([FromRoute] Guid id)
         {
             User? user = await userRepo.DeleteUserAsync(id);
 
-            if (user == null) return NotFound(new APIResponse(404, false));
+            if (user is null) return BadRequest(new APIResponse(400, false));
 
             return NoContent();
         }

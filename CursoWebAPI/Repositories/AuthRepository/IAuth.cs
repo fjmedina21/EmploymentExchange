@@ -4,10 +4,10 @@ namespace EmploymentExchangeAPI.Repositories
 {
     public interface IAuth
     {
-        Task<(GetUserDTO?, string?)> LogInAsync(LoginDTO login);
-        Task<GetUserDTO> SignUpAsync();
-        //Task<User> ChangePasswordAsync();
-        //Task<User> ResetPasswordAsync();
-        //Task<User> ForgotPasswordAsync();
+        Task<(GetUserDTO?, string?)> LoginAsync(LoginDTO login);
+        Task<GetUserDTO> SignupAsync();
+        Task<User> ChangePasswordAsync();
+        Task<User> ResetPasswordAsync();
+        Task<User> ForgotPasswordAsync();
     }
 }

@@ -32,13 +32,13 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             Category? category = await categoryRepo.GetCategoryByIdAsync(id);
             GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
-            if (category == null) return NotFound(new APIResponse(404, false));
+            if (category is null) return BadRequest(new APIResponse(400, false));
 
             return Ok(new APIResponse(ReadCategoryDTO));
         }
@@ -55,14 +55,14 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryDTO categoryDTO)
         {
             Category? category = mapper.Map<Category>(categoryDTO);
             category = await categoryRepo.UpdateCategoryAsync(id, category);
 
-            if (category == null) return NotFound(new APIResponse(404, false));
+            if (category is null) return BadRequest(new APIResponse(400, false));
 
             GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
@@ -70,12 +70,12 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
             Category? category = await categoryRepo.DeleteCategoryAsync(id);
 
-            if (category == null) return NotFound(new APIResponse(404, false));
+            if (category is null) return BadRequest(new APIResponse(400, false));
 
             return NoContent();
         }

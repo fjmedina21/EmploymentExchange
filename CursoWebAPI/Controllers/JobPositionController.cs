@@ -34,13 +34,13 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> GetJobPositionById([FromRoute] Guid id)
         {
             JobPosition? jobPosition = await jobPositionRepo.GetJobPositionByIdAsync(id);
             GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
-            if (jobPosition == null) return NotFound(new APIResponse(404, false));
+            if (jobPosition is null) return BadRequest(new APIResponse(400, false));
 
             return Ok(ReadJobPositionDTO);
         }
@@ -49,7 +49,7 @@ namespace EmploymentExchangeAPI.Controllers
         [ValidateModel]
         public async Task<IActionResult> CreateJobPosition([FromBody] JobPositionDTO jobPositionDTO)
         {
-            if (await categoryRepo.GetCategoryByIdAsync(jobPositionDTO.CategoryId) == null)
+            if (await categoryRepo.GetCategoryByIdAsync(jobPositionDTO.CategoryId) is null)
                 return BadRequest(new APIResponse(400, false));
 
             JobPosition jobPosition = mapper.Map<JobPosition>(jobPositionDTO);
@@ -62,14 +62,14 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateJobPosition([FromRoute] Guid id, [FromBody] JobPositionDTO jobPositionDTO)
         {
             JobPosition? jobPosition = mapper.Map<JobPosition>(jobPositionDTO);
             jobPosition = await jobPositionRepo.UpdateJobPositionAsync(id, jobPosition);
 
-            if (jobPosition == null) return NotFound(new APIResponse(404, false));
+            if (jobPosition is null) return BadRequest(new APIResponse(400, false));
 
             GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
@@ -77,12 +77,12 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteJobPosition([FromRoute] Guid id)
         {
             JobPosition? jobPosition = await jobPositionRepo.DeleteJobPositionAsync(id);
 
-            if (jobPosition == null) return NotFound(new APIResponse(404, false));
+            if (jobPosition is null) return BadRequest(new APIResponse(400, false));
 
             return NoContent();
         }

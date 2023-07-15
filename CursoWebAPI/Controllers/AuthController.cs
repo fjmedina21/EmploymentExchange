@@ -10,10 +10,12 @@ namespace EmploymentExchangeAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuth authRepo;
+        private readonly IJWT jwt;
 
-        public AuthController(IAuth authRepo)
+        public AuthController(IAuth authRepo, IJWT jwt)
         {
             this.authRepo = authRepo;
+            this.jwt = jwt;
         }
 
         [HttpPost]
@@ -21,9 +23,9 @@ namespace EmploymentExchangeAPI.Controllers
         [ValidateModel]
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
-            var (user, token) = await authRepo.LogInAsync(login);
-
-            if (user == null) return BadRequest(new APIResponse(400, false));
+            var (user, token) = await authRepo.LoginAsync(login);
+            
+            if (user is null || token is null) return BadRequest(new APIErrorResponse(400, "Invalid Credentials"));
 
             Response.Headers.Authorization = token;
             return Ok(new APIResponse(user));

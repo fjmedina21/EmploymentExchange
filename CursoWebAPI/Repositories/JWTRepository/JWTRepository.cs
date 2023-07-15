@@ -28,12 +28,13 @@ namespace EmploymentExchangeAPI.Repositories
             PrivateUserDTO PrivateUserDTO = mapper.Map<PrivateUserDTO>(entity);
             PrivateUserDTO.Roles.ForEach(r => roles.Add(r.Role.ToLower().Trim()));
 
-            List<Claim> claims = new List<Claim> {
-                new Claim("id", user.Id),
+            List<Claim> claims = new()
+            {
+                new Claim("id", user.Id.ToString()),
                 new Claim("email", user.Email)
             };
 
-            foreach (var role in roles) claims.Add(new Claim(ClaimTypes.Role, role));
+            foreach (var role in roles) claims.Add(new Claim("roles", role));
 
             SymmetricSecurityKey secretKey = new(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]));
             SigningCredentials credentials = new(secretKey, SecurityAlgorithms.HmacSha512Signature);
@@ -53,11 +54,11 @@ namespace EmploymentExchangeAPI.Repositories
 
             Guid Id = Guid.Parse(jwt.Claims.First(c => c.Type == "id").Value);
             string Email = jwt.Claims.First(c => c.Type == "email").Value;
-            List<Claim> RolesClaim = jwt.Claims.Where(c => c.Type == "roles").ToList();
+            List<Claim>? RolesClaim = jwt.Claims.Where(c => c.Type == "roles").ToList();
             
             List<string> Roles = new();
-            foreach (var role in RolesClaim) Role.Add(role.Value);
-            object jwtProp = new { Id, Email, Role };
+            foreach (var role in RolesClaim) Roles.Add(role.Value);
+            object jwtProp = new { Id, Email, Roles };
 
             return  jwtProp;
         }

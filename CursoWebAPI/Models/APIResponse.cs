@@ -9,15 +9,15 @@
 
         public APIResponse() { }
 
-        public APIResponse(object Data, int Total)
-        {
-            this.Total = Total;
-            this.Data = Data;
-        }
-
         public APIResponse(object Data)
         {
             Total = 1;
+            this.Data = new List<object>() { Data };
+        }
+
+        public APIResponse(object Data, int Total)
+        {
+            this.Total = Total;
             this.Data = Data;
         }
 
@@ -25,6 +25,7 @@
         {
             this.Ok = Ok;
             this.StatusCode = StatusCode;
+            Data = new List<object>();
         }
     }
 }

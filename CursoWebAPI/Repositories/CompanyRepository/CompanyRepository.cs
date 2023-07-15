@@ -34,7 +34,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return companie == null ? null : companie;
+            return companie is null ? null : companie;
         }
 
         public async Task<Company> CreateCompanyAsync(Company company)
@@ -51,7 +51,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbCompany == null) return null;
+            if (dbCompany is null) return null;
 
             dbCompany.Name = company.Name;
             dbCompany.Location = company.Location;
@@ -69,7 +69,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (companyExist == null) return null;
+            if (companyExist is null) return null;
 
             companyExist.State = false;
             await dbContext.SaveChangesAsync();

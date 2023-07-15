@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using EmploymentExchangeAPI;
 using EmploymentExchangeAPI.Data;
 using EmploymentExchangeAPI.Middlewares;
@@ -22,40 +21,24 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
 builder.Services.AddCors( 
-    options => 
-    { 
-        options.AddDefaultPolicy( 
-            policy => { policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            });
-        /*options.AddPolicy( "CustomPolicy",
-            policy => { policy.WithOrigins("http://example.com", "http://www.contoso.com")
-                           .WithHeaders(HeaderNames.ContentType, "auth")
-                           .WithMethods("POST", "PUT", "DELETE", "GET");
-            });*/
+    options => { options
+        .AddDefaultPolicy(policy =>  policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
     }
 );
 
 // Add services to the container.
-builder.Services.AddResponseCaching();
-builder.Services.AddControllers(option =>
-{
-    option.CacheProfiles.Add("Default", 
-        new CacheProfile()
-        {
-            Duration = 60*2,
-            Location = ResponseCacheLocation.Client
-        });
-}).AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = RefHandler.IgnoreCycles);
-
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddControllers()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = RefHandler.IgnoreCycles);
 
 builder.Services.AddDbContext<MyDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer"));
 });
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddTransient<GlobalErrorHandler>();
 
 //DTOs Mapping
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
@@ -76,20 +59,19 @@ builder.Services.AddAuthentication(option =>
     option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;   
-}
-)
-    .AddJwtBearer(options => 
-    {
+})
+    .AddJwtBearer(options =>
+    {    
         options.TokenValidationParameters = new TokenValidationParameters
         {
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateIssuerSigningKey = true,
         ValidateLifetime = true,
-        //ValidIssuers = builder.Configuration["JWT:Issuers"]
-        //ValidAudiences = builder.Configuration["JWT:Audiences"]
+        //ValidIssuer = builder.Configuration["JWT:Issuer"],
+        //ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+                Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
         };
     });
 
@@ -103,11 +85,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<GlobalErrorHandler>();
-
 app.UseHttpsRedirection();
 app.UseCors();
 //app.UseCors("CustomPolicy");
-app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

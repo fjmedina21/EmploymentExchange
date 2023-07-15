@@ -33,7 +33,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return category == null ? null : category;
+            return category is null ? null : category;
         }
 
         public async Task<Category> CreateCategoryAsync(Category category)
@@ -50,7 +50,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbCatgory == null) return null;
+            if (dbCatgory is null) return null;
 
             dbCatgory.Name = category.Name;
             dbCatgory.UpdatedAt = DateTime.Now;
@@ -65,7 +65,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (categoryExist == null) return null;
+            if (categoryExist is null) return null;
 
             categoryExist.State = false;
             await dbContext.SaveChangesAsync();

@@ -18,6 +18,7 @@ namespace EmploymentExchangeAPI
                 .ForMember(e => e.Id, e => e.MapFrom(x => x.Users.Id))
                 .ForMember(e => e.Email, e => e.MapFrom(x => x.Users.Email));
 
+            CreateMap<RoleUserDTO, RoleUser>();
             //////////////////////////////////////////////////////////////////////////
 
             CreateMap<LoginDTO, User>();

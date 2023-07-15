@@ -1,5 +1,6 @@
 ﻿using EmploymentExchangeAPI.Data;
 using EmploymentExchangeAPI.Models;
+using EmploymentExchangeAPI.Models.ManyToMany;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmploymentExchangeAPI.Repositories
@@ -33,7 +34,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return role == null ? null : role;
+            return role is null ? null : role;
         }
 
         public async Task<Role> CreateRoleAsync(Role role)
@@ -50,7 +51,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbRole == null) return null;
+            if (dbRole is null) return null;
 
             dbRole.Name = role.Name;
             dbRole.Description = role.Description;
@@ -66,7 +67,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (roleExist == null) return null;
+            if (roleExist is null) return null;
 
             roleExist.State = false;
             await dbContext.SaveChangesAsync();
@@ -74,14 +75,17 @@ namespace EmploymentExchangeAPI.Repositories
             return roleExist;
         }
 
-        /*public Task<User> AssignRoleAsync(Guid id)
+        public async Task<RoleUser> AssignRoleAsync(RoleUser entity)
         {
-            throw new NotImplementedException();
+            await dbContext.RoleUser.AddAsync(entity);
+            await dbContext.SaveChangesAsync();
+
+            return entity;
         }
 
-        public Task<User> RevokeRoleAsync(Guid id)
+        public void RevokeRole(RoleUser entity)
         {
-            throw new NotImplementedException();
-        }*/
+            
+        }
     }
 }

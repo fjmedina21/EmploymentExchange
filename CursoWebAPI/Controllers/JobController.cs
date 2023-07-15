@@ -32,12 +32,12 @@ namespace EmploymentExchangeAPI.Controllers
 
         //public
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> GetJobById([FromRoute] Guid id)
         {
             Job? job = await jobRepo.GetJobByIdAsync(id);
 
-            if (job == null) return NotFound(new APIResponse(404, false));
+            if (job is null) return NotFound(new APIResponse(404, false));
 
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
@@ -68,7 +68,7 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [ValidateModel]
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> UpdateJobType([FromRoute] Guid id, [FromBody] JobDTO jobDTO)
@@ -76,7 +76,7 @@ namespace EmploymentExchangeAPI.Controllers
             Job? job = mapper.Map<Job>(jobDTO);
             job = await jobRepo.UpdateJobAsync(id, job);
 
-            if (job == null) return NotFound(new APIResponse(404, false));
+            if (job is null) return NotFound(new APIResponse(404, false));
 
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
@@ -84,13 +84,13 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> DeleteJobType([FromRoute] Guid id)
         {
             Job? job = await jobRepo.DeleteJobAsync(id);
 
-            if (job == null) return NotFound(new APIResponse(404, false));
+            if (job is null) return NotFound(new APIResponse(404, false));
 
             return NoContent();
         }

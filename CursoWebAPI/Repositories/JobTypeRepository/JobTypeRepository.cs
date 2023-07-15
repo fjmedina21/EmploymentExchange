@@ -32,7 +32,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return jobType == null ? null : jobType;
+            return jobType is null ? null : jobType;
         }
 
         public async Task<JobType> CreateJobTypeAsync(JobType jobType)
@@ -49,7 +49,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbJobType == null) return null;
+            if (dbJobType is null) return null;
 
             dbJobType.Name = jobType.Name;
             dbJobType.UpdatedAt = DateTime.Now;
@@ -64,7 +64,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (jobTypeExist == null) return null;
+            if (jobTypeExist is null) return null;
 
             jobTypeExist.State = false;
             await dbContext.SaveChangesAsync();

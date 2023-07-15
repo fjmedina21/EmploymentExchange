@@ -39,7 +39,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Include(e => e.Category)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return jobPosition == null ? null : jobPosition;
+            return jobPosition is null ? null : jobPosition;
         }
 
         public async Task<JobPosition> CreateJobPositionAsync(JobPosition jobPosition)
@@ -56,7 +56,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbJobPosition == null) return null;
+            if (dbJobPosition is null) return null;
 
             dbJobPosition.Name = jobPosition.Name;
             dbJobPosition.UpdatedAt = DateTime.Now;
@@ -71,7 +71,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (jobPositionExist == null) return null;
+            if (jobPositionExist is null) return null;
 
             jobPositionExist.State = false;
             await dbContext.SaveChangesAsync();

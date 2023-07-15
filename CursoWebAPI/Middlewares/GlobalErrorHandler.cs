@@ -3,40 +3,34 @@ using System.Net;
 
 namespace EmploymentExchangeAPI.Middlewares
 {
-    public class GlobalErrorHandler
+    public class GlobalErrorHandler : IMiddleware
     {
         private readonly ILogger<GlobalErrorHandler> logger;
-        private readonly RequestDelegate next;
 
-        public GlobalErrorHandler(ILogger<GlobalErrorHandler> logger, RequestDelegate next)
+        public GlobalErrorHandler(ILogger<GlobalErrorHandler> logger)
         {
             this.logger = logger;
-            this.next = next;
         }
 
-        public async Task InvokeAsync(HttpContext httpContent)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
             {
-                await next(httpContent);
+                await next(context);
             }
             catch (Exception ex)
             {
-                Guid TraceId = Guid.NewGuid();
-                logger.LogError(ex, $"{TraceId} : {ex.Message}");
-                httpContent.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                Guid traceId = Guid.NewGuid();
+                int statusCode = (int)HttpStatusCode.InternalServerError;
+                string message = $"{traceId} : {ex.Message}";
 
-                object error = new { TraceId, ErrorMessage = "Internal Error" };
+                logger.LogError(ex, message);
+                context.Response.StatusCode = statusCode;
 
-                APIResponse response = new()
-                {
-                    Ok = false,
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
-                    Total = 1,
-                    Data = error
-                };
+                object error = new { traceId, message = "Internal Server Error" };
+                APIErrorResponse response = new(statusCode, error);
 
-                await httpContent.Response.WriteAsJsonAsync(response);
+                await context.Response.WriteAsJsonAsync(response);
             }
         }
 

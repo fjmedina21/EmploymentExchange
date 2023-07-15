@@ -37,7 +37,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return user == null ? null : user;
+            return user is null ? null : user;
         }
 
         public async Task<User> CreateUserAsync(User user)
@@ -55,7 +55,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbUser == null || !dbUser.ComparePassword(user.Password)) return null;
+            if (dbUser is null || !dbUser.ComparePassword(user.Password)) return null;
 
             dbUser.FirstName = user.FirstName;
             dbUser.LastName = user.LastName;
@@ -73,7 +73,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (userExist == null) return null;
+            if (userExist is null) return null;
 
             userExist.State = false;
             await dbContext.SaveChangesAsync();

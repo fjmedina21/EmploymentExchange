@@ -32,12 +32,12 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> GetJobTypeById([FromRoute] Guid id)
         {
             JobType? jobType = await jobTypeRepo.GetJobTypeByIdAsync(id);
 
-            if (jobType == null) return NotFound(new APIResponse(404, false));
+            if (jobType is null) return BadRequest(new APIResponse(400, false));
 
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
@@ -56,14 +56,14 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateJobType([FromRoute] Guid id, [FromBody] JobTypeDTO jobTypeDTO)
         {
             JobType? jobType = mapper.Map<JobType>(jobTypeDTO);
             jobType = await jobTypeRepo.UpdateJobTypeAsync(id, jobType);
 
-            if (jobType == null) return NotFound(new APIResponse(404, false));
+            if (jobType is null) return BadRequest(new APIResponse(400, false));
 
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
@@ -71,12 +71,12 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteJobType([FromRoute] Guid id)
         {
             JobType? jobType = await jobTypeRepo.DeleteJobTypeAsync(id);
 
-            if (jobType == null) return NotFound(new APIResponse(404, false));
+            if (jobType is null) return BadRequest(new APIResponse(400, false));
 
             return NoContent();
         }

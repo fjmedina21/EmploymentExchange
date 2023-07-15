@@ -64,7 +64,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Include(e => e.JobType).Include(e => e.Company)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return job == null ? null : job;
+            return job is null ? null : job;
         }
 
         public async Task<List<Job>?> GetJobsByCategoryAsync(string category, int pageNumber, int pageSize)
@@ -96,7 +96,7 @@ namespace EmploymentExchangeAPI.Repositories
         {
             Job? dbJob = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbJob == null) return null;
+            if (dbJob is null) return null;
 
             dbJob.CompanyId = job.CompanyId;
             dbJob.JobPositionId = job.JobPositionId;
@@ -113,7 +113,7 @@ namespace EmploymentExchangeAPI.Repositories
         {
             Job? jobExist = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (jobExist == null) return null;
+            if (jobExist is null) return null;
 
             jobExist.State = false;
             await dbContext.SaveChangesAsync();

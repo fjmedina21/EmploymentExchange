@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using EmploymentExchangeAPI.Models;
 using EmploymentExchangeAPI.Helpers;
 using EmploymentExchangeAPI.Repositories;
+using EmploymentExchangeAPI.Models.ManyToMany;
 
 namespace EmploymentExchangeAPI.Controllers
 {
     [Route("roles")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+   // [Authorize(Roles = "admin")]
     public class RoleController : ControllerBase
     {
         private readonly IRole roleRepo;
@@ -31,12 +32,12 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> GetRoleById([FromRoute] Guid id)
         {
             Role? role = await roleRepo.GetRoleByIdAsync(id);
 
-            if (role == null) return NotFound(new APIResponse(404, false));
+            if (role is null) return BadRequest(new APIResponse(400, false));
 
             GetRoleDTO ReadRolesDTO = mapper.Map<GetRoleDTO>(role);
 
@@ -55,14 +56,14 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateRole([FromRoute] Guid id, [FromBody] RoleDTO roleDTO)
         {
             Role? role = mapper.Map<Role>(roleDTO);
             role = await roleRepo.UpdateRoleAsync(id, role);
 
-            if (role == null) return NotFound(new APIResponse(404, false));
+            if (role is null) return BadRequest(new APIResponse(400, false));
 
             GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
@@ -70,14 +71,28 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:Guid}")]
         public async Task<IActionResult> DeleteRole([FromRoute] Guid id)
         {
             Role? role = await roleRepo.DeleteRoleAsync(id);
 
-            if (role == null) return NotFound(new APIResponse(404, false));
+            if (role is null) return BadRequest(new APIResponse(400, false));
 
             return NoContent();
         }
+
+        [HttpPost]
+        [Route("/roles-assignment")]
+        [ValidateModel]
+        public async Task<IActionResult> AssignRole(RoleUserDTO model)
+        {
+            RoleUser assignation = mapper.Map<RoleUser>(model);
+            assignation = await roleRepo.AssignRoleAsync(assignation);
+
+            if (assignation is null) return BadRequest(new APIResponse(400, false));
+
+            return Ok(new APIResponse(200,true));
+        }
+
     }
 }
