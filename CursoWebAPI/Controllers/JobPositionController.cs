@@ -30,7 +30,7 @@ namespace EmploymentExchangeAPI.Controllers
             var (jobPositions, total) = await jobPositionRepo.GetJobPositionsAsync(category);
             List<GetJobPositionDTO> ReadJobPositionDTO = mapper.Map<List<GetJobPositionDTO>>(jobPositions);
 
-            return Ok(new APIResponse(ReadJobPositionDTO, total));
+            return Ok(new APIResponse(Data: ReadJobPositionDTO, Total: total));
         }
 
         [HttpGet]
@@ -40,7 +40,7 @@ namespace EmploymentExchangeAPI.Controllers
             JobPosition? jobPosition = await jobPositionRepo.GetJobPositionByIdAsync(id);
             GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
-            if (jobPosition is null) return BadRequest(new APIResponse(400, false));
+            if (jobPosition is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             return Ok(ReadJobPositionDTO);
         }
@@ -50,7 +50,7 @@ namespace EmploymentExchangeAPI.Controllers
         public async Task<IActionResult> CreateJobPosition([FromBody] JobPositionDTO jobPositionDTO)
         {
             if (await categoryRepo.GetCategoryByIdAsync(jobPositionDTO.CategoryId) is null)
-                return BadRequest(new APIResponse(400, false));
+                return BadRequest(new APIResponse(Ok: false, StatusCode: 400, Message: "Category doesn't exist "));
 
             JobPosition jobPosition = mapper.Map<JobPosition>(jobPositionDTO);
 
@@ -58,7 +58,7 @@ namespace EmploymentExchangeAPI.Controllers
 
             GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
-            return CreatedAtAction(nameof(GetJobPositionById), new { id = jobPosition.Id }, new APIResponse(ReadJobPositionDTO, 201));
+            return CreatedAtAction(nameof(GetJobPositionById), new { id = jobPosition.Id }, new APIResponse(Data:ReadJobPositionDTO, StatusCode: 201));
         }
 
         [HttpPut]
@@ -69,11 +69,11 @@ namespace EmploymentExchangeAPI.Controllers
             JobPosition? jobPosition = mapper.Map<JobPosition>(jobPositionDTO);
             jobPosition = await jobPositionRepo.UpdateJobPositionAsync(id, jobPosition);
 
-            if (jobPosition is null) return BadRequest(new APIResponse(400, false));
+            if (jobPosition is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
-            return Ok(new APIResponse(ReadJobPositionDTO));
+            return Ok(new APIResponse(Data: ReadJobPositionDTO));
         }
 
         [HttpDelete]
@@ -82,7 +82,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             JobPosition? jobPosition = await jobPositionRepo.DeleteJobPositionAsync(id);
 
-            if (jobPosition is null) return BadRequest(new APIResponse(400, false));
+            if (jobPosition is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             return NoContent();
         }

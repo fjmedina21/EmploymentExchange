@@ -10,7 +10,7 @@ namespace EmploymentExchangeAPI.Controllers
 {
     [Route("roles")]
     [ApiController]
-   // [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     public class RoleController : ControllerBase
     {
         private readonly IRole roleRepo;
@@ -28,7 +28,7 @@ namespace EmploymentExchangeAPI.Controllers
             var (roles, total) = await roleRepo.GetRolesAsync();
             List<GetRoleDTO> ReadRolesDTO = mapper.Map<List<GetRoleDTO>>(roles);
 
-            return Ok(new APIResponse(ReadRolesDTO, total));
+            return Ok(new APIResponse(Data: ReadRolesDTO, Total: total));
         }
 
         [HttpGet]
@@ -37,11 +37,11 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Role? role = await roleRepo.GetRoleByIdAsync(id);
 
-            if (role is null) return BadRequest(new APIResponse(400, false));
+            if (role is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetRoleDTO ReadRolesDTO = mapper.Map<GetRoleDTO>(role);
 
-            return Ok(new APIResponse(ReadRolesDTO));
+            return Ok(new APIResponse(Data:ReadRolesDTO));
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace EmploymentExchangeAPI.Controllers
             role = await roleRepo.CreateRoleAsync(role);
             GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
-            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(ReadRoleDTO, 201));
+            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(Data:ReadRoleDTO, StatusCode: 201));
         }
 
         [HttpPut]
@@ -63,11 +63,11 @@ namespace EmploymentExchangeAPI.Controllers
             Role? role = mapper.Map<Role>(roleDTO);
             role = await roleRepo.UpdateRoleAsync(id, role);
 
-            if (role is null) return BadRequest(new APIResponse(400, false));
+            if (role is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
-            return Ok(new APIResponse(ReadRoleDTO));
+            return Ok(new APIResponse(Data: ReadRoleDTO));
         }
 
         [HttpDelete]
@@ -76,7 +76,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Role? role = await roleRepo.DeleteRoleAsync(id);
 
-            if (role is null) return BadRequest(new APIResponse(400, false));
+            if (role is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             return NoContent();
         }
@@ -89,9 +89,9 @@ namespace EmploymentExchangeAPI.Controllers
             RoleUser assignation = mapper.Map<RoleUser>(model);
             assignation = await roleRepo.AssignRoleAsync(assignation);
 
-            if (assignation is null) return BadRequest(new APIResponse(400, false));
+            if (assignation is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
-            return Ok(new APIResponse(200,true));
+            return Ok(new APIResponse(Message: "Role assigned"));
         }
 
     }

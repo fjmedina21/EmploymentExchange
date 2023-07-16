@@ -25,10 +25,10 @@ namespace EmploymentExchangeAPI.Controllers
         {
             var (user, token) = await authRepo.LoginAsync(login);
             
-            if (user is null || token is null) return BadRequest(new APIErrorResponse(400, "Invalid Credentials"));
+            if (user is null || token is null) return BadRequest(new APIResponse(Ok:false,StatusCode: 400, Message:"Invalid Credentials"));
 
             Response.Headers.Authorization = token;
-            return Ok(new APIResponse(user));
+            return Ok(new APIResponse(Data: user));
         }
 
         [HttpPost]

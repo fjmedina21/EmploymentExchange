@@ -21,14 +21,13 @@ namespace EmploymentExchangeAPI.Middlewares
             catch (Exception ex)
             {
                 Guid traceId = Guid.NewGuid();
-                int statusCode = (int)HttpStatusCode.InternalServerError;
+                int serverErrorCode = (int)HttpStatusCode.InternalServerError;
                 string message = $"{traceId} : {ex.Message}";
 
                 logger.LogError(ex, message);
-                context.Response.StatusCode = statusCode;
+                context.Response.StatusCode = serverErrorCode;
 
-                object error = new { traceId, message = "Internal Server Error" };
-                APIErrorResponse response = new(statusCode, error);
+                APIErrorResponse response = new(serverErrorCode, TraceId: traceId, ErrorMessage: "Internal Server Error");
 
                 await context.Response.WriteAsJsonAsync(response);
             }

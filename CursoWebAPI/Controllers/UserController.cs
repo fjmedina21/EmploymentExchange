@@ -27,7 +27,7 @@ namespace EmploymentExchangeAPI.Controllers
             var (users, total) = await userRepo.GetUsersAsync(pageNumber, pageSize);
             List<GetUserDTO> ReadUsersDTO = mapper.Map<List<GetUserDTO>>(users);
 
-            return Ok(new APIResponse(ReadUsersDTO, total));
+            return Ok(new APIResponse(Data: ReadUsersDTO, Total: total));
         }
 
         //public
@@ -37,11 +37,11 @@ namespace EmploymentExchangeAPI.Controllers
         {
             User? user = await userRepo.GetUserByIdAsync(id);
 
-            if (user is null) return BadRequest(new APIResponse(404, false));
+            if (user is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
              
-            return Ok(new APIResponse(ReadUserDTO));
+            return Ok(new APIResponse(Data: ReadUserDTO));
         }
 
         [HttpPost]
@@ -53,7 +53,7 @@ namespace EmploymentExchangeAPI.Controllers
             user = await userRepo.CreateUserAsync(user);
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(ReadUserDTO) { StatusCode = 201});
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(Data: ReadUserDTO, StatusCode:201));
         }
 
         [HttpPut]
@@ -65,11 +65,11 @@ namespace EmploymentExchangeAPI.Controllers
             User? user = mapper.Map<User>(userDTO);
             user = await userRepo.UpdateUserAsync(id, user);
 
-            if (user is null) return BadRequest(new APIResponse(400, false));
+            if (user is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
-            return Ok(new APIResponse(ReadUserDTO));
+            return Ok(new APIResponse(Data: ReadUserDTO));
         }
 
         [HttpDelete]
@@ -79,7 +79,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             User? user = await userRepo.DeleteUserAsync(id);
 
-            if (user is null) return BadRequest(new APIResponse(400, false));
+            if (user is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             return NoContent();
         }

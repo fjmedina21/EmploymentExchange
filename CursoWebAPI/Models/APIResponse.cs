@@ -2,30 +2,19 @@
 {
     public class APIResponse
     {
-        public bool Ok { get; set; } = true;
-        public int StatusCode { get; set; } = 200;
-        public int Total { get; set; } = 0;
-        public object Data { get; set; } = new();
+        public bool Ok { get; set; } 
+        public int StatusCode { get; set; }
+        public string? Message { get; set; }
+        public int? Total { get; set; }
+        public object? Data { get; set; }
 
-        public APIResponse() { }
-
-        public APIResponse(object Data)
-        {
-            Total = 1;
-            this.Data = new List<object>() { Data };
-        }
-
-        public APIResponse(object Data, int Total)
-        {
-            this.Total = Total;
-            this.Data = Data;
-        }
-
-        public APIResponse(int StatusCode, bool Ok)
+        public APIResponse(bool Ok = true, int StatusCode = 200, string? Message = null, int? Total = null, object? Data = null)
         {
             this.Ok = Ok;
             this.StatusCode = StatusCode;
-            Data = new List<object>();
+            this.Message = Message;
+            this.Total = Total;
+            this.Data = Data;
         }
     }
 }

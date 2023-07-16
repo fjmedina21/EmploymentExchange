@@ -27,7 +27,7 @@ namespace EmploymentExchangeAPI.Controllers
             var (companies, total) = await companyRepo.GetCompaniesAsync(pageNumber, pageSize);
             List<GetCompanyDTO> ReadCompanyDTO = mapper.Map<List<GetCompanyDTO>>(companies);
 
-            return Ok(new APIResponse(ReadCompanyDTO, total));
+            return Ok(new APIResponse(Data: ReadCompanyDTO, Total: total));
         }
 
         //public
@@ -38,9 +38,9 @@ namespace EmploymentExchangeAPI.Controllers
             Company? company = await companyRepo.GetCompanyByIdAsync(id);
             GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
 
-            if (company is null) return BadRequest(new APIResponse(400, false));
+            if (company is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
-            return Ok(new APIResponse(ReadCompanyDTO));
+            return Ok(new APIResponse(Data: ReadCompanyDTO));
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace EmploymentExchangeAPI.Controllers
             company = await companyRepo.CreateCompanyAsync(company);
             GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
 
-            return CreatedAtAction(nameof(GetCompanyById), new { id = company.Id }, new APIResponse(ReadCompanyDTO, 201));
+            return CreatedAtAction(nameof(GetCompanyById), new { id = company.Id }, new APIResponse(Data: ReadCompanyDTO, StatusCode: 201));
         }
 
         [HttpPut]
@@ -64,11 +64,11 @@ namespace EmploymentExchangeAPI.Controllers
             Company? company = mapper.Map<Company>(companyDTO);
             company = await companyRepo.UpdateCompanyAsync(id, company);
 
-            if (company is null) return BadRequest(new APIResponse(400, false));
+            if (company is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
 
-            return Ok(new APIResponse(ReadCompanyDTO));
+            return Ok(new APIResponse(Data: ReadCompanyDTO));
         }
 
         [HttpDelete]
@@ -78,7 +78,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Company? company = await companyRepo.DeleteCompanyAsync(id);
 
-            if (company is null) return BadRequest(new APIResponse(400, false));
+            if (company is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             return NoContent();
         }

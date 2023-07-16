@@ -5,7 +5,7 @@ using EmploymentExchangeAPI;
 using EmploymentExchangeAPI.Data;
 using EmploymentExchangeAPI.Middlewares;
 using EmploymentExchangeAPI.Repositories;
-using RefHandler = System.Text.Json.Serialization.ReferenceHandler;
+using System.Text.Json.Serialization;
 using System.Text;
 using Serilog;
 
@@ -28,7 +28,11 @@ builder.Services.AddCors(
 
 // Add services to the container.
 builder.Services.AddControllers()
-    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = RefHandler.IgnoreCycles);
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.Services.AddDbContext<MyDBContext>(options =>
 {

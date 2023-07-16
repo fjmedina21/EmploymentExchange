@@ -28,7 +28,7 @@ namespace EmploymentExchangeAPI.Controllers
             var (jobTypes, total) = await jobTypeRepo.GetJobTypesAsync();
             List<GetJobTypeDTO> ReadJobTypeDTO = mapper.Map<List<GetJobTypeDTO>>(jobTypes);
 
-            return Ok(new APIResponse(ReadJobTypeDTO, total));
+            return Ok(new APIResponse(Data:ReadJobTypeDTO, Total:total));
         }
 
         [HttpGet]
@@ -37,11 +37,11 @@ namespace EmploymentExchangeAPI.Controllers
         {
             JobType? jobType = await jobTypeRepo.GetJobTypeByIdAsync(id);
 
-            if (jobType is null) return BadRequest(new APIResponse(400, false));
+            if (jobType is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
-            return Ok(new APIResponse(ReadJobTypeDTO));
+            return Ok(new APIResponse(Data: ReadJobTypeDTO));
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace EmploymentExchangeAPI.Controllers
             jobType = await jobTypeRepo.CreateJobTypeAsync(jobType);
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
-            return CreatedAtAction(nameof(GetJobTypeById), new { id = jobType.Id }, new APIResponse(ReadJobTypeDTO, 201));
+            return CreatedAtAction(nameof(GetJobTypeById), new { id = jobType.Id }, new APIResponse(Data:ReadJobTypeDTO, StatusCode: 201));
         }
 
         [HttpPut]
@@ -63,11 +63,11 @@ namespace EmploymentExchangeAPI.Controllers
             JobType? jobType = mapper.Map<JobType>(jobTypeDTO);
             jobType = await jobTypeRepo.UpdateJobTypeAsync(id, jobType);
 
-            if (jobType is null) return BadRequest(new APIResponse(400, false));
+            if (jobType is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
-            return Ok(new APIResponse(ReadJobTypeDTO));
+            return Ok(new APIResponse(Data: ReadJobTypeDTO));
         }
 
         [HttpDelete]
@@ -76,7 +76,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             JobType? jobType = await jobTypeRepo.DeleteJobTypeAsync(id);
 
-            if (jobType is null) return BadRequest(new APIResponse(400, false));
+            if (jobType is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             return NoContent();
         }

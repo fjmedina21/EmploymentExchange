@@ -27,7 +27,7 @@ namespace EmploymentExchangeAPI.Controllers
             var (jobs, total) = await jobRepo.GetJobsAsync(pageNumber, pageSize, filterOn, filterQuery);
             List<GetJobDTO> ReadJobsDTO = mapper.Map<List<GetJobDTO>>(jobs);
 
-            return Ok(new APIResponse(ReadJobsDTO, total));
+            return Ok(new APIResponse(Data: ReadJobsDTO, Total:total));
         }
 
         //public
@@ -37,11 +37,11 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Job? job = await jobRepo.GetJobByIdAsync(id);
 
-            if (job is null) return NotFound(new APIResponse(404, false));
+            if (job is null) return BadRequest(new APIResponse(Ok:false, StatusCode: 400));
 
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
-            return Ok(new APIResponse(ReadJobDTO));
+            return Ok(new APIResponse(Data: ReadJobDTO));
         }
 
         //public
@@ -52,7 +52,7 @@ namespace EmploymentExchangeAPI.Controllers
             List<Job>? jobs = await jobRepo.GetJobsByCategoryAsync(category, pageNumber, pageSize);
             List<GetJobDTO> ReadJobsDTO = mapper.Map<List<GetJobDTO>>(jobs);
 
-            return Ok(new APIResponse(ReadJobsDTO));
+            return Ok(new APIResponse(Data: ReadJobsDTO));
         }
 
         [HttpPost]
@@ -64,7 +64,7 @@ namespace EmploymentExchangeAPI.Controllers
             job = await jobRepo.CreateJobAsync(job);
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
-            return CreatedAtAction(nameof(GetJobById), new { id = job.Id }, new APIResponse(ReadJobDTO, 201));
+            return CreatedAtAction(nameof(GetJobById), new { id = job.Id }, new APIResponse(Data:ReadJobDTO, StatusCode: 201));
         }
 
         [HttpPut]
@@ -76,11 +76,11 @@ namespace EmploymentExchangeAPI.Controllers
             Job? job = mapper.Map<Job>(jobDTO);
             job = await jobRepo.UpdateJobAsync(id, job);
 
-            if (job is null) return NotFound(new APIResponse(404, false));
+            if (job is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
-            return Ok(new APIResponse(ReadJobDTO));
+            return Ok(new APIResponse(Data: ReadJobDTO));
         }
 
         [HttpDelete]
@@ -90,7 +90,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Job? job = await jobRepo.DeleteJobAsync(id);
 
-            if (job is null) return NotFound(new APIResponse(404, false));
+            if (job is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
 
             return NoContent();
         }

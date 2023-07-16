@@ -3,14 +3,12 @@
     public class APIErrorResponse
     {
         public int StatusCode { get; set; }
-        public object Error { get; set; }
+        public object Error { get; set; } 
 
-        public APIErrorResponse() { }
-
-        public APIErrorResponse(int StatusCode, object Error)
+        public APIErrorResponse(int StatusCode, Guid? TraceId = null, string? ErrorMessage = null)
         {
             this.StatusCode = StatusCode;
-            this.Error = Error;
+            this.Error = new { TraceId, ErrorMessage };
         }
     }
 }
