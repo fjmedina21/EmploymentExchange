@@ -36,11 +36,11 @@ namespace EmploymentExchangeAPI.Controllers
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             User? user = await userRepo.GetUserByIdAsync(id);
-
+            
             if (user is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
-
+            
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
-             
+            
             return Ok(new APIResponse(Data: ReadUserDTO));
         }
 

@@ -27,7 +27,7 @@ namespace EmploymentExchangeAPI.Middlewares
                 logger.LogError(ex, message);
                 context.Response.StatusCode = serverErrorCode;
 
-                APIErrorResponse response = new(serverErrorCode, TraceId: traceId, ErrorMessage: "Internal Server Error");
+                APIErrorResponse response = new(serverErrorCode, TraceId: traceId, Message: "Internal Server Error");
 
                 await context.Response.WriteAsJsonAsync(response);
             }

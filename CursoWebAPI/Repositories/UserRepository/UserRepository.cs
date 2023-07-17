@@ -1,4 +1,5 @@
 ﻿using EmploymentExchangeAPI.Data;
+using EmploymentExchangeAPI.Helpers;
 using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,6 +80,12 @@ namespace EmploymentExchangeAPI.Repositories
             await dbContext.SaveChangesAsync();
 
             return userExist;
+        }
+
+        public async Task<bool> EmailExist(string email)
+        {
+            User? user = await dbContext.Users.AsNoTracking().FirstAsync(e => e.Email.Equals(email));
+            return (user is not null);
         }
     }
 }
