@@ -9,7 +9,6 @@ namespace EmploymentExchangeAPI.Controllers
 {
     [Route("jobtypes")]
     [ApiController]
-    [Authorize(Roles = "admin")]
     public class JobTypeController : ControllerBase
     {
         private readonly IJobType jobTypeRepo;
@@ -22,7 +21,7 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "poster")]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> GetJobTypes()
         {
             var (jobTypes, total) = await jobTypeRepo.GetJobTypesAsync();
@@ -33,6 +32,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetJobTypeById([FromRoute] Guid id)
         {
             JobType? jobType = await jobTypeRepo.GetJobTypeByIdAsync(id);
@@ -46,6 +46,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateJobType([FromBody] JobTypeDTO jobTypeDTO)
         {
             JobType jobType = mapper.Map<JobType>(jobTypeDTO);
@@ -58,6 +59,7 @@ namespace EmploymentExchangeAPI.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateJobType([FromRoute] Guid id, [FromBody] JobTypeDTO jobTypeDTO)
         {
             JobType? jobType = mapper.Map<JobType>(jobTypeDTO);
@@ -72,6 +74,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteJobType([FromRoute] Guid id)
         {
             JobType? jobType = await jobTypeRepo.DeleteJobTypeAsync(id);

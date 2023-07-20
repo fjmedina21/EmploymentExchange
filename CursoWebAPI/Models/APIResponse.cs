@@ -12,9 +12,22 @@
         {
             this.Ok = Ok;
             this.StatusCode = StatusCode;
-            this.Message = Message;
+            this.Message = Message ?? DefaultMessage(StatusCode);
             this.Total = Total;
             this.Data = Data;
         }
+
+
+        private static string? DefaultMessage(int statusCode) => (statusCode) switch
+        {
+            200 => "action completed successfully",
+            201 => "resource created",
+            204 => "no content",
+            401 => "unauthorized",
+            403 => "forbidden",
+            404 => "resource not found",
+            500 => "internal server error",
+            _ => null
+        };
     }
 }

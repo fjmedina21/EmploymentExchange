@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EmploymentExchangeAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Diagnostics;
 
 namespace EmploymentExchangeAPI.Helpers
 {
@@ -7,7 +9,9 @@ namespace EmploymentExchangeAPI.Helpers
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!context.ModelState.IsValid) context.Result = new BadRequestResult();
+            if (!context.ModelState.IsValid) {
+               context.Result = new BadRequestResult();         
+            }
         }
     }
 }

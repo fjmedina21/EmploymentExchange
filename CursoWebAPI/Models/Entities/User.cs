@@ -26,8 +26,8 @@ namespace EmploymentExchangeAPI.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<RoleUser> RoleUser { get; set; }
-        public IList<JobUser> JobUser { get; set; }
+        public IList<RoleUser> RoleUser { get; set; } = new List<RoleUser>();
+        public IList<JobUser> JobUser { get; set; } = new List<JobUser>();
 
         public string HashPassword(string password)
         {

@@ -9,7 +9,6 @@ namespace EmploymentExchangeAPI.Controllers
 {
     [Route("jobpositions")]
     [ApiController]
-    [Authorize(Roles = "admin")]
     public class JobPositionController : ControllerBase
     {
         private readonly IJobPosition jobPositionRepo;
@@ -24,7 +23,7 @@ namespace EmploymentExchangeAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "poster")]
+        [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> GetJobPositions([FromQuery] string? category)
         {
             var (jobPositions, total) = await jobPositionRepo.GetJobPositionsAsync(category);
@@ -35,6 +34,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetJobPositionById([FromRoute] Guid id)
         {
             JobPosition? jobPosition = await jobPositionRepo.GetJobPositionByIdAsync(id);
@@ -47,6 +47,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateJobPosition([FromBody] JobPositionDTO jobPositionDTO)
         {
             if (await categoryRepo.GetCategoryByIdAsync(jobPositionDTO.CategoryId) is null)
@@ -64,6 +65,7 @@ namespace EmploymentExchangeAPI.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateJobPosition([FromRoute] Guid id, [FromBody] JobPositionDTO jobPositionDTO)
         {
             JobPosition? jobPosition = mapper.Map<JobPosition>(jobPositionDTO);
@@ -78,6 +80,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteJobPosition([FromRoute] Guid id)
         {
             JobPosition? jobPosition = await jobPositionRepo.DeleteJobPositionAsync(id);

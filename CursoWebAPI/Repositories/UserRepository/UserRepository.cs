@@ -21,7 +21,6 @@ namespace EmploymentExchangeAPI.Repositories
 
             IQueryable<User> users = dbContext.Users.AsNoTracking()
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-                .Where(e => e.State)
                 .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
                 .AsQueryable();
 

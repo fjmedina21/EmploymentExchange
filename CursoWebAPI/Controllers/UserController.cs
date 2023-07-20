@@ -74,7 +74,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Deleteuser([FromRoute] Guid id)
         {
             User? user = await userRepo.DeleteUserAsync(id);
