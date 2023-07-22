@@ -17,12 +17,12 @@
             this.Data = Data;
         }
 
-
         private static string? DefaultMessage(int statusCode) => (statusCode) switch
         {
             200 => "action completed successfully",
             201 => "resource created",
             204 => "no content",
+            400 => "bad request",
             401 => "unauthorized",
             403 => "forbidden",
             404 => "resource not found",

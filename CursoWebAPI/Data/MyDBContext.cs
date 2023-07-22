@@ -1,5 +1,4 @@
 ﻿using EmploymentExchangeAPI.Models;
-using EmploymentExchangeAPI.Models.ManyToMany;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmploymentExchangeAPI.Data

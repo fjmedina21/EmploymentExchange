@@ -1,4 +1,4 @@
-﻿namespace EmploymentExchangeAPI.Models.ManyToMany
+﻿namespace EmploymentExchangeAPI.Models
 {
     public class RoleUser
     {

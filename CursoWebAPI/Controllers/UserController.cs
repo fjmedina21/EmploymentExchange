@@ -37,7 +37,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             User? user = await userRepo.GetUserByIdAsync(id);
             
-            if (user is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (user is null) return NotFound(new APIResponse(Ok: false, StatusCode: 404));
             
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
             

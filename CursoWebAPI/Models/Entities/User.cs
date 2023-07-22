@@ -1,5 +1,4 @@
-﻿using EmploymentExchangeAPI.Models.ManyToMany;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using BC = BCrypt.Net.BCrypt;
 

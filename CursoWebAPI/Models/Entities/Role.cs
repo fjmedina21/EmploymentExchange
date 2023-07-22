@@ -1,5 +1,4 @@
-﻿using EmploymentExchangeAPI.Models.ManyToMany;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EmploymentExchangeAPI.Models

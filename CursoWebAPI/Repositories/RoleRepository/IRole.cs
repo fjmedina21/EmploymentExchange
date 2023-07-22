@@ -1,5 +1,4 @@
 ﻿using EmploymentExchangeAPI.Models;
-using EmploymentExchangeAPI.Models.ManyToMany;
 
 namespace EmploymentExchangeAPI.Repositories
 {
@@ -11,6 +10,6 @@ namespace EmploymentExchangeAPI.Repositories
         Task<Role?> UpdateRoleAsync(Guid id, Role role);
         Task<Role?> DeleteRoleAsync(Guid id);
         Task<RoleUser> AssignRoleAsync(RoleUser entity);
-        void RevokeRole(RoleUser entity);
+        //Task<bool> RevokeRoleAsync(RoleUser entity);
     }
 }

@@ -37,7 +37,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Job? job = await jobRepo.GetJobByIdAsync(id);
 
-            if (job is null) return BadRequest(new APIResponse(Ok:false, StatusCode: 400));
+            if (job is null) return NotFound(new APIResponse(Ok:false, StatusCode: 404));
 
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 

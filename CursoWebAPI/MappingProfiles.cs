@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using EmploymentExchangeAPI.Models;
 using EmploymentExchangeAPI.Models.Private;
-using EmploymentExchangeAPI.Models.ManyToMany;
 
 namespace EmploymentExchangeAPI
 {

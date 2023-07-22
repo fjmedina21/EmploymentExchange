@@ -40,7 +40,7 @@ namespace EmploymentExchangeAPI.Controllers
             JobPosition? jobPosition = await jobPositionRepo.GetJobPositionByIdAsync(id);
             GetJobPositionDTO ReadJobPositionDTO = mapper.Map<GetJobPositionDTO>(jobPosition);
 
-            if (jobPosition is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (jobPosition is null) return NotFound(new APIResponse(Ok: false, StatusCode: 404));
 
             return Ok(ReadJobPositionDTO);
         }

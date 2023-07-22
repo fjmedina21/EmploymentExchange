@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File(path: "Logs/log.txt", rollingInterval: RollingInterval.Day)
+    //.WriteTo.File(path: "Logs/log.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Warning()
     .CreateLogger();
 

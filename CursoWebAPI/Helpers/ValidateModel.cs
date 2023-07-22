@@ -1,7 +1,5 @@
-﻿using EmploymentExchangeAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Diagnostics;
 
 namespace EmploymentExchangeAPI.Helpers
 {

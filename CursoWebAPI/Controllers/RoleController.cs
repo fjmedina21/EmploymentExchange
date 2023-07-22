@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using EmploymentExchangeAPI.Models;
 using EmploymentExchangeAPI.Helpers;
 using EmploymentExchangeAPI.Repositories;
-using EmploymentExchangeAPI.Models.ManyToMany;
 
 namespace EmploymentExchangeAPI.Controllers
 {
     [Route("roles")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+   // [Authorize(Roles = "admin")]
     public class RoleController : ControllerBase
     {
         private readonly IRole roleRepo;
@@ -37,7 +36,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Role? role = await roleRepo.GetRoleByIdAsync(id);
 
-            if (role is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (role is null) return NotFound(new APIResponse(Ok: false, StatusCode: 404));
 
             GetRoleDTO ReadRolesDTO = mapper.Map<GetRoleDTO>(role);
 
@@ -93,6 +92,19 @@ namespace EmploymentExchangeAPI.Controllers
 
             return Ok(new APIResponse(Message: "Role assigned"));
         }
+
+        //[HttpDelete]
+        //[Route("/remoke-roles")]
+        //[ValidateModel]
+        //public async Task<IActionResult> RevokeRoleAsync(RoleUserDTO model)
+        //{
+        //    RoleUser assignation = mapper.Map<RoleUser>(model);
+        //    bool roleuser = await roleRepo.RevokeRoleAsync(assignation);
+
+        //    if (!roleuser) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+
+        //    return NoContent();
+        //}
 
     }
 }
