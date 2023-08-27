@@ -37,7 +37,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Job? job = await jobRepo.GetJobByIdAsync(id);
 
-            if (job is null) return NotFound(new APIResponse(Ok:false, StatusCode: 404));
+            if (job is null) return NotFound(new APIResponse(StatusCode: 404));
 
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
@@ -76,7 +76,7 @@ namespace EmploymentExchangeAPI.Controllers
             Job? job = mapper.Map<Job>(jobDTO);
             job = await jobRepo.UpdateJobAsync(id, job);
 
-            if (job is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (job is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
 
@@ -90,7 +90,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Job? job = await jobRepo.DeleteJobAsync(id);
 
-            if (job is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (job is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             return NoContent();
         }

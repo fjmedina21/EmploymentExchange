@@ -1,19 +1,19 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.EntityFrameworkCore;
 using EmploymentExchangeAPI;
 using EmploymentExchangeAPI.Data;
 using EmploymentExchangeAPI.Middlewares;
 using EmploymentExchangeAPI.Repositories;
-using System.Text.Json.Serialization;
-using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
-    //.WriteTo.File(path: "Logs/log.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File(path: "Logs/log.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Warning()
     .CreateLogger();
 

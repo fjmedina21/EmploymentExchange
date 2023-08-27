@@ -1,5 +1,7 @@
-﻿using EmploymentExchangeAPI.Data;
-using EmploymentExchangeAPI.Helpers;
+﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using DispensarioMedico.Helpers;
+using EmploymentExchangeAPI.Data;
 using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +9,7 @@ namespace EmploymentExchangeAPI.Repositories
 {
     public class UserRepository : IUser
     {
+        private PasswordHashing hashing = new();
         private readonly MyDBContext dbContext;
 
         public UserRepository(MyDBContext dBContext)
@@ -21,7 +24,7 @@ namespace EmploymentExchangeAPI.Repositories
 
             IQueryable<User> users = dbContext.Users.AsNoTracking()
                 .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
+                .Include(e => e.Roles)
                 .AsQueryable();
 
             List<User> result = await users.Skip(skipResults).Take(pageSize).ToListAsync();
@@ -34,7 +37,7 @@ namespace EmploymentExchangeAPI.Repositories
         {
             User? user = await dbContext.Users.AsNoTracking()
                 .Where(e => e.State)
-                .Include(e => e.RoleUser).ThenInclude(e => e.Roles)
+                .Include(e => e.Roles)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return user is null ? null : user;
@@ -42,8 +45,19 @@ namespace EmploymentExchangeAPI.Repositories
 
         public async Task<User> CreateUserAsync(User user)
         {
-            user.HashPassword(user.Password);
-            await dbContext.Users.AddAsync(user);
+            //IList<Role> roles = new List<Role>();
+            //foreach (int id in user.Roles)
+            //{
+            //    Role? role = await dbContext.Roles.FirstAsync(e => e.Id.Equals(id));
+            //    roles.Add(role);
+            //}
+
+            //User user = mapper.Map<Usuario>(model);
+            //user.Roles = roles;
+
+            hashing.HashPassword(user.Password);
+
+            var entry = await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
 
             return user;
@@ -55,7 +69,7 @@ namespace EmploymentExchangeAPI.Repositories
                 .Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbUser is null || !dbUser.ComparePassword(user.Password)) return null;
+            if (dbUser is null || !hashing.ComparePassword(user.Password, dbUser.Password)) return null;
 
             dbUser.FirstName = user.FirstName;
             dbUser.LastName = user.LastName;
@@ -79,12 +93,6 @@ namespace EmploymentExchangeAPI.Repositories
             await dbContext.SaveChangesAsync();
 
             return userExist;
-        }
-
-        public async Task<bool> EmailExist(string email)
-        {
-            User? user = await dbContext.Users.AsNoTracking().FirstAsync(e => e.Email.Equals(email));
-            return (user is not null);
         }
     }
 }

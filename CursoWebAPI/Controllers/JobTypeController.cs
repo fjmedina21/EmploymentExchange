@@ -37,7 +37,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             JobType? jobType = await jobTypeRepo.GetJobTypeByIdAsync(id);
 
-            if (jobType is null) return NotFound(new APIResponse(Ok: false, StatusCode: 404));
+            if (jobType is null) return NotFound(new APIResponse(StatusCode: 404));
 
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
@@ -65,7 +65,7 @@ namespace EmploymentExchangeAPI.Controllers
             JobType? jobType = mapper.Map<JobType>(jobTypeDTO);
             jobType = await jobTypeRepo.UpdateJobTypeAsync(id, jobType);
 
-            if (jobType is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (jobType is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             GetJobTypeDTO ReadJobTypeDTO = mapper.Map<GetJobTypeDTO>(jobType);
 
@@ -79,7 +79,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             JobType? jobType = await jobTypeRepo.DeleteJobTypeAsync(id);
 
-            if (jobType is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (jobType is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             return NoContent();
         }

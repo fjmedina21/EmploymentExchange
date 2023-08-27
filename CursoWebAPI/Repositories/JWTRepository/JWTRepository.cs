@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using System.Text;
+﻿using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using EmploymentExchangeAPI.Models;
-using EmploymentExchangeAPI.Models.Private;
 
 namespace EmploymentExchangeAPI.Repositories
 {
@@ -12,26 +10,22 @@ namespace EmploymentExchangeAPI.Repositories
     {
         private readonly IConfiguration configuration;
         private readonly IUser userRepo;
-        private readonly IMapper mapper;
 
-        public JWTRepository(IConfiguration configuration, IUser userRepo, IMapper mapper)
+        public JWTRepository(IConfiguration configuration, IUser userRepo)
         {
             this.configuration = configuration;
             this.userRepo = userRepo;
-            this.mapper = mapper;
         }
 
         public async Task<string> CreateJWTAsync(User user)
         {
             List<string> roles = new();
             User? entity = await userRepo.GetUserByIdAsync(user.Id);
-            PrivateUserDTO PrivateUserDTO = mapper.Map<PrivateUserDTO>(entity);
-            PrivateUserDTO.Roles.ForEach(r => roles.Add(r.Role.ToLower().Trim()));
+            entity?.Roles.ToList().ForEach(role => roles.Add(role.Name.ToLower().Trim()));
 
             List<Claim> claims = new()
             {
                 new Claim("id", user.Id.ToString()),
-                new Claim("email", user.Email)
             };
 
             foreach (var role in roles) claims.Add(new Claim("roles", role));
@@ -48,19 +42,18 @@ namespace EmploymentExchangeAPI.Repositories
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public object DecodeJWT(string token)
+        public (Guid, List<string>) DecodeJWT(string token)
         {
-            JwtSecurityToken jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            string[] bearerToken = token.Split(' ');
+            JwtSecurityToken jwt = new JwtSecurityTokenHandler().ReadJwtToken(bearerToken[1]);
 
             Guid Id = Guid.Parse(jwt.Claims.First(c => c.Type == "id").Value);
-            string Email = jwt.Claims.First(c => c.Type == "email").Value;
             List<Claim>? RolesClaim = jwt.Claims.Where(c => c.Type == "roles").ToList();
             
             List<string> Roles = new();
             foreach (var role in RolesClaim) Roles.Add(role.Value);
-            object jwtProp = new { Id, Email, Roles };
 
-            return  jwtProp;
+            return (Id, Roles);
         }
     }
 }

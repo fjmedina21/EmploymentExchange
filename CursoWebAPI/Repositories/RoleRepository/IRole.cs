@@ -9,7 +9,5 @@ namespace EmploymentExchangeAPI.Repositories
         Task<Role> CreateRoleAsync(Role role);
         Task<Role?> UpdateRoleAsync(Guid id, Role role);
         Task<Role?> DeleteRoleAsync(Guid id);
-        Task<RoleUser> AssignRoleAsync(RoleUser entity);
-        //Task<bool> RevokeRoleAsync(RoleUser entity);
     }
 }

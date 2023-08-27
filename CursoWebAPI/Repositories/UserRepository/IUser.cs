@@ -9,6 +9,5 @@ namespace EmploymentExchangeAPI.Repositories
         Task<User> CreateUserAsync(User user);
         Task<User?> UpdateUserAsync(Guid id, User user);
         Task<User?> DeleteUserAsync(Guid id);
-        Task<bool> EmailExist(string email);
     }
 }

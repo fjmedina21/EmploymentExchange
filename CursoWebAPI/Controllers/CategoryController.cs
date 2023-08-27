@@ -38,7 +38,7 @@ namespace EmploymentExchangeAPI.Controllers
             Category? category = await categoryRepo.GetCategoryByIdAsync(id);
             GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
-            if (category is null) return NotFound(new APIResponse(Ok: false, StatusCode: 404));
+            if (category is null) return NotFound(new APIResponse(StatusCode: 404));
 
             return Ok(new APIResponse(Data: ReadCategoryDTO));
         }
@@ -64,7 +64,7 @@ namespace EmploymentExchangeAPI.Controllers
             Category? category = mapper.Map<Category>(categoryDTO);
             category = await categoryRepo.UpdateCategoryAsync(id, category);
 
-            if (category is null) return BadRequest(new APIResponse(Ok:false, StatusCode:400));
+            if (category is null) return BadRequest(new APIResponse(StatusCode:400));
 
             GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
@@ -78,7 +78,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Category? category = await categoryRepo.DeleteCategoryAsync(id);
 
-            if (category is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (category is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             return NoContent();
         }

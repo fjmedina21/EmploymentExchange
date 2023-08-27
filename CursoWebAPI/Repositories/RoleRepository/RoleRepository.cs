@@ -18,7 +18,7 @@ namespace EmploymentExchangeAPI.Repositories
             IQueryable<Role> roles = dbContext.Roles.AsNoTracking()
                 .OrderBy(e => e.Name)
                 .Where(e => e.State)
-                //.Include(e => e.RoleUser).ThenInclude(e => e.Users)
+                //.Include(e => e.Users)
                 .AsQueryable();
 
             List<Role> result = await roles.ToListAsync();
@@ -73,26 +73,5 @@ namespace EmploymentExchangeAPI.Repositories
 
             return roleExist;
         }
-
-        public async Task<RoleUser> AssignRoleAsync(RoleUser entity)
-        {
-            await dbContext.RoleUser.AddAsync(entity);
-            await dbContext.SaveChangesAsync();
-
-            return entity;
-        }
-
-        //public async Task<bool> RevokeRoleAsync(RoleUser entity)
-        //{
-        //    IQueryable<RoleUser> roleUser = dbContext.RoleUser
-        //        .Where(e => e.RoleId.Equals(entity.RoleId)).Where(e => e.UserId.Equals(entity.UserId));
-
-        //    if (roleUser is null) return false;
-
-        //    dbContext.Remove(roleUser);
-        //    await dbContext.SaveChangesAsync();
-
-        //    return true;
-        //}
     }
 }

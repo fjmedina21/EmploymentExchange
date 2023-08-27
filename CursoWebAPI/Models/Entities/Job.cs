@@ -24,10 +24,10 @@ namespace EmploymentExchangeAPI.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public JobPosition JobPosition { get; set; }
-        public JobType JobType { get; set; }
-        public Company Company { get; set; }
+        public JobPosition JobPosition { get; set; } = null!;
+        public JobType JobType { get; set; } = null!;
+        public Company Company { get; set; } = null!;
 
-        public IList<JobUser> JobUser { get; set; }
+        public IList<User> Users { get; set; } = new List<User>();
     }
 }

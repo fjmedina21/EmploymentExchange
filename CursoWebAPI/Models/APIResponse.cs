@@ -8,9 +8,9 @@
         public int? Total { get; set; }
         public object? Data { get; set; }
 
-        public APIResponse(bool Ok = true, int StatusCode = 200, string? Message = null, int? Total = null, object? Data = null)
+        public APIResponse(int StatusCode = 200, string? Message = null, int? Total = null, object? Data = null)
         {
-            this.Ok = Ok;
+            Ok = (StatusCode < 400);
             this.StatusCode = StatusCode;
             this.Message = Message ?? DefaultMessage(StatusCode);
             this.Total = Total;

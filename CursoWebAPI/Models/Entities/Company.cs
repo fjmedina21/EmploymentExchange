@@ -8,12 +8,12 @@ namespace EmploymentExchangeAPI.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required, StringLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         [Required, EmailAddress, StringLength(50)]
-        public string RecruiterEmail { get; set; }
+        public string RecruiterEmail { get; set; } = null!;
         [Required]
         [Column(TypeName = "ntext")]
-        public string Location { get; set; }
+        public string Location { get; set; } = null!;
         public string? Logo { get; set; }
         public string? URL { get; set; }
         [Required]

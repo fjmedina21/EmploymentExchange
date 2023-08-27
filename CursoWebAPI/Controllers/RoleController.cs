@@ -36,7 +36,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Role? role = await roleRepo.GetRoleByIdAsync(id);
 
-            if (role is null) return NotFound(new APIResponse(Ok: false, StatusCode: 404));
+            if (role is null) return NotFound(new APIResponse(StatusCode: 404));
 
             GetRoleDTO ReadRolesDTO = mapper.Map<GetRoleDTO>(role);
 
@@ -62,7 +62,7 @@ namespace EmploymentExchangeAPI.Controllers
             Role? role = mapper.Map<Role>(roleDTO);
             role = await roleRepo.UpdateRoleAsync(id, role);
 
-            if (role is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (role is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
@@ -75,36 +75,9 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Role? role = await roleRepo.DeleteRoleAsync(id);
 
-            if (role is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (role is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             return NoContent();
         }
-
-        [HttpPost]
-        [Route("/roles-assignment")]
-        [ValidateModel]
-        public async Task<IActionResult> AssignRole(RoleUserDTO model)
-        {
-            RoleUser assignation = mapper.Map<RoleUser>(model);
-            assignation = await roleRepo.AssignRoleAsync(assignation);
-
-            if (assignation is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
-
-            return Ok(new APIResponse(Message: "Role assigned"));
-        }
-
-        //[HttpDelete]
-        //[Route("/remoke-roles")]
-        //[ValidateModel]
-        //public async Task<IActionResult> RevokeRoleAsync(RoleUserDTO model)
-        //{
-        //    RoleUser assignation = mapper.Map<RoleUser>(model);
-        //    bool roleuser = await roleRepo.RevokeRoleAsync(assignation);
-
-        //    if (!roleuser) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
-
-        //    return NoContent();
-        //}
-
     }
 }

@@ -8,7 +8,7 @@ namespace EmploymentExchangeAPI.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required, StringLength(30)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         [Required, ForeignKey(nameof(CategoryId))]
         public Guid CategoryId { get; set; }
         [Required]
@@ -18,6 +18,6 @@ namespace EmploymentExchangeAPI.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public Category Category { get; set; }
+        public Category Category { get; set; } = null!;
     }
 }

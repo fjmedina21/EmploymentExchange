@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using EmploymentExchangeAPI.Models;
-using EmploymentExchangeAPI.Models.Private;
 
 namespace EmploymentExchangeAPI
 {
@@ -8,28 +7,13 @@ namespace EmploymentExchangeAPI
     {
         public MappingProfiles()
         {
-            ///////////////////////////////////////////////////////////////////////////
-            // Many to Many : RoleUSer
-            CreateMap<RoleUser, PrivateUserRolesDTO>()
-                .ForMember(e => e.Role, e => e.MapFrom(x => x.Roles.Name));
-
-            CreateMap<RoleUser, PrivateRoleUsersDTO>()
-                .ForMember(e => e.Id, e => e.MapFrom(x => x.Users.Id))
-                .ForMember(e => e.Email, e => e.MapFrom(x => x.Users.Email));
-
-            CreateMap<RoleUserDTO, RoleUser>();
-            //////////////////////////////////////////////////////////////////////////
-
             CreateMap<LoginDTO, User>();
+
             CreateMap<UserDTO, User>();
             CreateMap<User, GetUserDTO>();
-            CreateMap<User, PrivateUserDTO>()
-                .ForMember(e => e.Roles, e => e.MapFrom(x => x.RoleUser));
 
             CreateMap<RoleDTO, Role>();
             CreateMap<Role, GetRoleDTO>();
-            CreateMap<Role, PrivateRoleDTO>()
-                .ForMember(e => e.Users, e => e.MapFrom(x => x.RoleUser));
 
             CreateMap<JobTypeDTO, JobType>();
             CreateMap<JobType, GetJobTypeDTO>();

@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using DispensarioMedico.Helpers;
 using EmploymentExchangeAPI.Data;
 using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace EmploymentExchangeAPI.Repositories
 {
     public class AuthRepository : IAuth
     {
+        private PasswordHashing hashing = new();
         private readonly MyDBContext dbContext;
         private readonly IMapper mapper;
         private readonly IJWT jwt;
@@ -23,7 +26,7 @@ namespace EmploymentExchangeAPI.Repositories
             User? user = await dbContext.Users.AsNoTracking().Where(e => e.State)
                 .FirstOrDefaultAsync(e => e.Email == login.Email);
 
-            if (user is null || !user.ComparePassword(login.Password)) return (null, null);
+            if (user is null || !hashing.ComparePassword(login.Password, user.Password)) return (null, null);
 
             string token = await jwt.CreateJWTAsync(user);
             GetUserDTO userDTO = mapper.Map<GetUserDTO>(user);
@@ -36,9 +39,25 @@ namespace EmploymentExchangeAPI.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<User> ChangePasswordAsync()
+        public async Task<APIResponse> ChangePasswordAsync(ChangePasswordDTO model, string token)
         {
-            throw new NotImplementedException();
+            (Guid userId, _) = jwt.DecodeJWT(token);
+
+            User? user = await dbContext.Users.Where(e => e.State)
+                .FirstOrDefaultAsync(e => e.Id.Equals(userId));
+
+            if (user is null) return new APIResponse(StatusCode: 404);
+
+            bool currentPasswordMatch = hashing.ComparePassword(model.CurrentPassword, user.Password);
+            bool newPasswordMatch = hashing.ComparePassword(model.NewPassword, user.Password);
+
+            if (!currentPasswordMatch) return new APIResponse(StatusCode: 400, Message: "Incorrect current password ");
+            if (newPasswordMatch) return new APIResponse(StatusCode: 400, Message: "New password can't match current password");
+
+            user.Password = hashing.HashPassword(model.NewPassword);
+            await dbContext.SaveChangesAsync();
+
+            return new APIResponse();
         }
 
         public Task<User> ForgotPasswordAsync()

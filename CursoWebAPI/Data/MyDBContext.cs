@@ -1,4 +1,5 @@
-﻿using EmploymentExchangeAPI.Models;
+﻿using DispensarioMedico.Helpers;
+using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmploymentExchangeAPI.Data
@@ -15,14 +16,19 @@ namespace EmploymentExchangeAPI.Data
         public DbSet<Job> Jobs { get; set; }
         public DbSet<JobPosition> JobPositions { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
-        public DbSet<RoleUser> RoleUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<RoleUser>().HasKey(e => new { e.RoleId, e.UserId });
-            modelBuilder.Entity<JobUser>().HasKey(e => new { e.JobId, e.UserId });
+            User user = new()
+            {
+                FirstName = "Francisco", LastName = "Medina",
+                Email = "fjmedina21@gmail.com", Password = "12345678"
+            };
+
+            PasswordHashing hashing = new();
+            hashing.HashPassword(user.Password);
 
             List<JobType> defaultJobTypes = new List<JobType>();
             defaultJobTypes.Add(new JobType { Name = "Full-Time" });
@@ -37,6 +43,7 @@ namespace EmploymentExchangeAPI.Data
 
             modelBuilder.Entity<Role>().HasData(defaultRolesValues);
             modelBuilder.Entity<JobType>().HasData(defaultJobTypes);
+            modelBuilder.Entity<User>().HasData(user);
         }
 
     }

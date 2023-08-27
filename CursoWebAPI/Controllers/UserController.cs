@@ -37,7 +37,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             User? user = await userRepo.GetUserByIdAsync(id);
             
-            if (user is null) return NotFound(new APIResponse(Ok: false, StatusCode: 404));
+            if (user is null) return NotFound(new APIResponse(StatusCode: 404));
             
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
             
@@ -46,7 +46,7 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpPost]
         [ValidateModel]
-        [Authorize(Roles = "admin")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO userDTO)
         {
             User user = mapper.Map<User>(userDTO);
@@ -65,7 +65,7 @@ namespace EmploymentExchangeAPI.Controllers
             User? user = mapper.Map<User>(userDTO);
             user = await userRepo.UpdateUserAsync(id, user);
 
-            if (user is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (user is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
@@ -79,7 +79,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             User? user = await userRepo.DeleteUserAsync(id);
 
-            if (user is null) return BadRequest(new APIResponse(Ok: false, StatusCode: 400));
+            if (user is null) return BadRequest(new APIResponse(StatusCode: 400));
 
             return NoContent();
         }

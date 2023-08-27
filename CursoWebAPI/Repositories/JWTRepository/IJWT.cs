@@ -5,6 +5,6 @@ namespace EmploymentExchangeAPI.Repositories
     public interface IJWT
     {
         public Task<string> CreateJWTAsync(User user);
-        public object DecodeJWT(string token);
+        public (Guid, List<string>) DecodeJWT(string token);
     }
 }

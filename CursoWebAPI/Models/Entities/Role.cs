@@ -8,7 +8,7 @@ namespace EmploymentExchangeAPI.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required, StringLength(30)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         [Column(TypeName = "ntext")]
         public string? Description { get; set; }
         [Required]
@@ -18,7 +18,7 @@ namespace EmploymentExchangeAPI.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<RoleUser> RoleUser { get; set; } = new List<RoleUser>();
+        public IList<User> Users { get; set; } = new List<User>();
 
     }
 }

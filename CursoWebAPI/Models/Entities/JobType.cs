@@ -7,7 +7,7 @@ namespace EmploymentExchangeAPI.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required, StringLength(30)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         [Required]
         public bool State { get; set; } = true;
         [Required]

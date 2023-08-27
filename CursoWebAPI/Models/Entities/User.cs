@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using BC = BCrypt.Net.BCrypt;
 
 namespace EmploymentExchangeAPI.Models
 {
@@ -10,13 +9,13 @@ namespace EmploymentExchangeAPI.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         [Required, StringLength(30)]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = null!;
         [Required, StringLength(30)]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = null!;
         [Required, EmailAddress, StringLength(50)]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
         [Required, MinLength(8), MaxLength(100)]
-        public string Password { get; set; }
+        public string Password { get; set; } = null!;
         public string? Photo { get; set; }
         [Required]
         public bool State { get; set; } = true;
@@ -25,17 +24,7 @@ namespace EmploymentExchangeAPI.Models
         [Required]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public IList<RoleUser> RoleUser { get; set; } = new List<RoleUser>();
-        public IList<JobUser> JobUser { get; set; } = new List<JobUser>();
-
-        public string HashPassword(string password)
-        {
-            return Password = BC.EnhancedHashPassword(password, 15);
-        }
-
-        public bool ComparePassword(string password)
-        {
-            return BC.EnhancedVerify(password, Password);
-        }
+        public IList<Role> Roles { get; set; } = new List<Role>();
+        public IList<Job> Jobs { get; set; } = new List<Job>();
     }
 }
