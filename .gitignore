@@ -226,3 +226,4 @@ AppPackages/
 #####
 **/Migrations/*
 **/Logs/*
+**/appsettings.json
