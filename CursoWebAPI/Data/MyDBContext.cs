@@ -23,8 +23,8 @@ namespace EmploymentExchangeAPI.Data
 
             User user = new()
             {
-                FirstName = "Francisco", LastName = "Medina",
-                Email = "fjmedina21@gmail.com", Password = "12345678"
+                FirstName = "Seed", LastName = "User",
+                Email = "seeduser@domain.com", Password = "12345678"
             };
 
             PasswordHashing hashing = new();
