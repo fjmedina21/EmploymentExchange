@@ -3,7 +3,6 @@ using DispensarioMedico.Helpers;
 using EmploymentExchangeAPI.Data;
 using EmploymentExchangeAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace EmploymentExchangeAPI.Repositories
 {

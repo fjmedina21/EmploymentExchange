@@ -2,7 +2,7 @@
 {
     public class APIResponse
     {
-        public bool Ok { get; set; } 
+        public bool Ok { get; set; }
         public int StatusCode { get; set; }
         public string? Message { get; set; }
         public int? Total { get; set; }

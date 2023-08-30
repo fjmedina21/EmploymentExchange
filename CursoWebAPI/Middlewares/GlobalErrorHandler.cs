@@ -28,8 +28,8 @@ namespace EmploymentExchangeAPI.Middlewares
                 context.Response.StatusCode = serverErrorCode;
 
                 APIErrorResponse response = new(
-                    serverErrorCode, 
-                    TraceId: traceId, 
+                    serverErrorCode,
+                    TraceId: traceId,
                     Message: "Internal Server Error"
                     );
 

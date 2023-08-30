@@ -18,33 +18,23 @@ namespace EmploymentExchangeAPI.Repositories
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
 
-            IQueryable<Job> jobs = dbContext.Jobs.AsNoTracking()
-                .Where(e => e.State).Where(e => e.JobPosition.State)
-                .Where(e => e.JobType.State).Where(e => e.Company.State)
-                .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-                .Include(e => e.JobPosition).ThenInclude(e => e.Category)
-                .Include(e => e.JobType).Include(e => e.Company)
-                .AsQueryable();
+            IQueryable<Job> jobs = LoadData().AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
             {
                 switch (filterOn.ToLower())
                 {
                     case "category":
-                        jobs = jobs.Where(e => e.JobPosition.Category.Name
-                        .Contains(filterQuery, StringComparison.OrdinalIgnoreCase));
+                        jobs = jobs.Where(e => e.JobPosition.Category.Name.Contains(filterQuery));
                         break;
                     case "position":
-                        jobs = jobs.Where(e => e.JobPosition.Name
-                        .Contains(filterQuery, StringComparison.OrdinalIgnoreCase));
+                        jobs = jobs.Where(e => e.JobPosition.Name.Contains(filterQuery));
                         break;
                     case "company":
-                        jobs = jobs.Where(e => e.Company.Name
-                       .Contains(filterQuery, StringComparison.OrdinalIgnoreCase));
+                        jobs = jobs.Where(e => e.Company.Name.Contains(filterQuery));
                         break;
                     case "location":
-                        jobs = jobs.Where(e => e.Company.Location
-                       .Contains(filterQuery, StringComparison.OrdinalIgnoreCase));
+                        jobs = jobs.Where(e => e.Company.Location.Contains(filterQuery));
                         break;
                 }
             }
@@ -57,29 +47,20 @@ namespace EmploymentExchangeAPI.Repositories
 
         public async Task<Job?> GetJobByIdAsync(Guid id)
         {
-            Job? job = await dbContext.Jobs.AsNoTracking()
-                .Where(e => e.State).Where(e => e.JobPosition.State)
-                .Where(e => e.JobType.State).Where(e => e.Company.State)
-                .Include(e => e.JobPosition).ThenInclude(e => e.Category)
-                .Include(e => e.JobType).Include(e => e.Company)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Job? job = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             return job is null ? null : job;
         }
 
-        public async Task<List<Job>?> GetJobsByCategoryAsync(string category, int pageNumber, int pageSize)
+        public async Task<List<Job>> GetJobsByCategoryAsync(string category, int pageNumber, int pageSize)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
 
-            List<Job>? jobs = await dbContext.Jobs
-                .Where(e => e.State)
-                .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-                .Include(e => e.JobPosition).Include(e => e.JobPosition.Category)
-                .Include(e => e.JobType).Include(e => e.Company)
-                .Where(e => e.JobPosition.Category.Name.Equals(category, StringComparison.OrdinalIgnoreCase))
-                .Skip(pageNumber).Take(pageSize)
-                .ToListAsync();
+            IQueryable<Job> jobsList = LoadData().AsNoTracking();
+
+            List<Job> jobs = await jobsList.Where(e => e.JobPosition.Category.Name.Equals(category))
+                .Skip(skipResults).Take(pageSize).ToListAsync();
 
             return jobs;
         }
@@ -94,7 +75,7 @@ namespace EmploymentExchangeAPI.Repositories
 
         public async Task<Job?> UpdateJobAsync(Guid id, Job job)
         {
-            Job? dbJob = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Job? dbJob = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (dbJob is null) return null;
 
@@ -111,7 +92,7 @@ namespace EmploymentExchangeAPI.Repositories
 
         public async Task<Job?> DeleteJobAsync(Guid id)
         {
-            Job? jobExist = await dbContext.Jobs.Where(e => e.State).FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Job? jobExist = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
             if (jobExist is null) return null;
 
@@ -119,6 +100,18 @@ namespace EmploymentExchangeAPI.Repositories
             await dbContext.SaveChangesAsync();
 
             return jobExist;
+        }
+
+        private IQueryable<Job> LoadData()
+        {
+            IQueryable<Job> jobs = dbContext.Jobs.Where(e => e.State)
+               .Include(e => e.JobPosition).ThenInclude(e => e.Category)
+               .Include(e => e.JobType).Include(e => e.Company)
+               .Where(e => e.JobPosition.State).Where(e => e.JobType.State).Where(e => e.Company.State)
+               .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
+               .AsQueryable();
+
+            return jobs;
         }
     }
 }

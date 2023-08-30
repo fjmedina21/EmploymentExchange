@@ -11,7 +11,7 @@ namespace DispensarioMedico.Helpers
 
         public bool ComparePassword(string password, string hash)
         {
-            return BC.EnhancedVerify(text:password, hash: hash);
+            return BC.EnhancedVerify(text: password, hash: hash);
         }
     }
 }

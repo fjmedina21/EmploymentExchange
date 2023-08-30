@@ -64,7 +64,7 @@ namespace EmploymentExchangeAPI.Controllers
             Company? company = mapper.Map<Company>(companyDTO);
             company = await companyRepo.UpdateCompanyAsync(id, company);
 
-            if (company is null) return BadRequest(new APIResponse(StatusCode: 400));
+            if (company is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Check that the resource exist and try again"));
 
             GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
 
@@ -78,7 +78,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Company? company = await companyRepo.DeleteCompanyAsync(id);
 
-            if (company is null) return BadRequest(new APIResponse(StatusCode: 400));
+            if (company is null) return NotFound(new APIResponse(StatusCode: 404));
 
             return NoContent();
         }

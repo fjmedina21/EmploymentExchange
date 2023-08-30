@@ -9,6 +9,7 @@ namespace EmploymentExchangeAPI.Controllers
 {
     [Route("categories")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategory categoryRepo;
@@ -27,12 +28,11 @@ namespace EmploymentExchangeAPI.Controllers
             var (categories, total) = await categoryRepo.GetCategoriesAsync();
             List<GetCategoryDTO> ReadCategoryDTO = mapper.Map<List<GetCategoryDTO>>(categories);
 
-            return Ok(new APIResponse(Data:ReadCategoryDTO, Total:total)); ;
+            return Ok(new APIResponse(Data: ReadCategoryDTO, Total: total)); ;
         }
 
         [HttpGet]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             Category? category = await categoryRepo.GetCategoryByIdAsync(id);
@@ -45,7 +45,6 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpPost]
         [ValidateModel]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO categoryDTO)
         {
             Category category = mapper.Map<Category>(categoryDTO);
@@ -58,13 +57,12 @@ namespace EmploymentExchangeAPI.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryDTO categoryDTO)
         {
             Category? category = mapper.Map<Category>(categoryDTO);
             category = await categoryRepo.UpdateCategoryAsync(id, category);
 
-            if (category is null) return BadRequest(new APIResponse(StatusCode:400));
+            if (category is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Check that the resource exist and try again"));
 
             GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
 
@@ -73,12 +71,11 @@ namespace EmploymentExchangeAPI.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
             Category? category = await categoryRepo.DeleteCategoryAsync(id);
 
-            if (category is null) return BadRequest(new APIResponse(StatusCode: 400));
+            if (category is null) return NotFound(new APIResponse(StatusCode: 404));
 
             return NoContent();
         }

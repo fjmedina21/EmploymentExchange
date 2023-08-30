@@ -7,8 +7,9 @@ namespace EmploymentExchangeAPI.Helpers
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!context.ModelState.IsValid) {
-               context.Result = new BadRequestResult();         
+            if (!context.ModelState.IsValid)
+            {
+                context.Result = new BadRequestResult();
             }
         }
     }

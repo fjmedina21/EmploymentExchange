@@ -26,8 +26,8 @@ namespace EmploymentExchangeAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
             var (user, token) = await authRepo.LoginAsync(login);
-            
-            if (user is null || token is null) return BadRequest(new APIResponse(StatusCode: 400, Message:"Invalid Credentials"));
+
+            if (user is null || token is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Invalid Credentials"));
 
             Response.Headers.Authorization = token;
             return Ok(new APIResponse(Data: user));

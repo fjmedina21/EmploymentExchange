@@ -36,24 +36,24 @@ namespace EmploymentExchangeAPI.Controllers
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             User? user = await userRepo.GetUserByIdAsync(id);
-            
+
             if (user is null) return NotFound(new APIResponse(StatusCode: 404));
-            
+
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
-            
+
             return Ok(new APIResponse(Data: ReadUserDTO));
         }
 
         [HttpPost]
         [ValidateModel]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO userDTO)
         {
             User user = mapper.Map<User>(userDTO);
             user = await userRepo.CreateUserAsync(user);
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(Data: ReadUserDTO, StatusCode:201));
+            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(Data: ReadUserDTO, StatusCode: 201));
         }
 
         [HttpPut]
@@ -65,7 +65,7 @@ namespace EmploymentExchangeAPI.Controllers
             User? user = mapper.Map<User>(userDTO);
             user = await userRepo.UpdateUserAsync(id, user);
 
-            if (user is null) return BadRequest(new APIResponse(StatusCode: 400));
+            if (user is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Check that the resource exist and try again"));
 
             GetUserDTO ReadUserDTO = mapper.Map<GetUserDTO>(user);
 
@@ -79,7 +79,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             User? user = await userRepo.DeleteUserAsync(id);
 
-            if (user is null) return BadRequest(new APIResponse(StatusCode: 400));
+            if (user is null) return NotFound(new APIResponse(StatusCode: 404));
 
             return NoContent();
         }

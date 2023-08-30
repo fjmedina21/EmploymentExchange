@@ -9,7 +9,7 @@ namespace EmploymentExchangeAPI.Controllers
 {
     [Route("roles")]
     [ApiController]
-   // [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     public class RoleController : ControllerBase
     {
         private readonly IRole roleRepo;
@@ -40,7 +40,7 @@ namespace EmploymentExchangeAPI.Controllers
 
             GetRoleDTO ReadRolesDTO = mapper.Map<GetRoleDTO>(role);
 
-            return Ok(new APIResponse(Data:ReadRolesDTO));
+            return Ok(new APIResponse(Data: ReadRolesDTO));
         }
 
         [HttpPost]
@@ -51,7 +51,7 @@ namespace EmploymentExchangeAPI.Controllers
             role = await roleRepo.CreateRoleAsync(role);
             GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
-            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(Data:ReadRoleDTO, StatusCode: 201));
+            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(Data: ReadRoleDTO, StatusCode: 201));
         }
 
         [HttpPut]
@@ -62,7 +62,7 @@ namespace EmploymentExchangeAPI.Controllers
             Role? role = mapper.Map<Role>(roleDTO);
             role = await roleRepo.UpdateRoleAsync(id, role);
 
-            if (role is null) return BadRequest(new APIResponse(StatusCode: 400));
+            if (role is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Check that the resource exist and try again"));
 
             GetRoleDTO ReadRoleDTO = mapper.Map<GetRoleDTO>(role);
 
@@ -75,7 +75,7 @@ namespace EmploymentExchangeAPI.Controllers
         {
             Role? role = await roleRepo.DeleteRoleAsync(id);
 
-            if (role is null) return BadRequest(new APIResponse(StatusCode: 400));
+            if (role is null) return NotFound(new APIResponse(StatusCode: 404));
 
             return NoContent();
         }
