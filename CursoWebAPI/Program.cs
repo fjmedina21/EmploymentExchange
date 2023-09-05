@@ -12,7 +12,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration()
-    .WriteTo.Console()
+    //.WriteTo.Console()
     .WriteTo.File(path: "Logs/log.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Warning()
     .CreateLogger();
@@ -37,6 +37,7 @@ builder.Services.AddControllers()
 builder.Services.AddDbContext<MyDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLServer"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("someeHosting"));
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -89,7 +90,6 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<GlobalErrorHandler>();
 app.UseHttpsRedirection();
 app.UseCors();
-//app.UseCors("CustomPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

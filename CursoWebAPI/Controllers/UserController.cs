@@ -9,6 +9,7 @@ namespace EmploymentExchangeAPI.Controllers
 {
     [Route("users")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUser userRepo;
@@ -20,7 +21,6 @@ namespace EmploymentExchangeAPI.Controllers
             this.mapper = mapper;
         }
 
-        //public
         [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
@@ -30,7 +30,6 @@ namespace EmploymentExchangeAPI.Controllers
             return Ok(new APIResponse(Data: ReadUsersDTO, Total: total));
         }
 
-        //public
         [HttpGet]
         [Route("{id:Guid}")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
@@ -59,7 +58,6 @@ namespace EmploymentExchangeAPI.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
-        [Authorize]
         public async Task<IActionResult> Updateuser([FromRoute] Guid id, [FromBody] UserDTO userDTO)
         {
             User? user = mapper.Map<User>(userDTO);

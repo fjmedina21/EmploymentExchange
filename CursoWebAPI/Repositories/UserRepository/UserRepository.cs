@@ -43,17 +43,16 @@ namespace EmploymentExchangeAPI.Repositories
             return user is null ? null : user;
         }
 
-        public async Task<User> CreateUserAsync(User user)
+        public async Task<User> CreateUserAsync(User user /*, List<Guid>IdRoles*/)
         {
-            //IList<Role> roles = new List<Role>();
-            //foreach (int id in user.Roles)
-            //{
-            //    Role? role = await dbContext.Roles.FirstAsync(e => e.Id.Equals(id));
-            //    roles.Add(role);
-            //}
+            /*List<Models.Role> roles = new();
+            foreach (Guid id in IdRoles)
+            {
+                Models.Role? role = await dbContext.Roles.FirstAsync(e => e.Id.Equals(id));
+                roles.Add(role);
+            }
 
-            //User user = mapper.Map<Usuario>(model);
-            //user.Roles = roles;
+            user.Roles = roles;*/
 
             hashing.HashPassword(user.Password);
 
