@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -7,70 +8,79 @@ namespace API.Repositories
     public class CategoryRepository : ICategory
     {
         private readonly MyDBContext dbContext;
+        private readonly IMapper mapper;
 
-        public CategoryRepository(MyDBContext dbContext)
+
+        public CategoryRepository(MyDBContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
 
-        public async Task<(List<Category>, int)> GetCategoriesAsync()
+        private IQueryable<Category>? LoadData() => dbContext.Categories.Where(e => e.State);
+
+
+        public async Task<APIResponse> GetCategoriesAsync()
         {
+            IQueryable<Category> entities = LoadData()!.OrderBy(e => e.Name).AsQueryable();
 
-            IQueryable<Category> categories = dbContext.Categories.AsNoTracking()
-                .OrderBy(e => e.Name)
-                .Where(e => e.State)
-                .AsQueryable();
+            List<Category> result = await entities.ToListAsync();
+            List<GetCategoryDTO> dto = mapper.Map<List<GetCategoryDTO>>(entities);
 
-            List<Category> result = await categories.ToListAsync();
-            int total = categories.Count();
-
-            return (result, total);
+            int total = entities.Count();
+            return (new APIResponse(Data: dto, Total: total));
         }
 
-        public async Task<Category?> GetCategoryByIdAsync(Guid id)
+        public async Task<APIResponse> GetCategoryByIdAsync(Guid id)
         {
-            Category? category = await dbContext.Categories.AsNoTracking()
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Category? entity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return category is null ? null : category;
+            GetCategoryDTO dto =  mapper.Map<GetCategoryDTO>(entity);
+            return entity is not null ? new APIResponse(Data: dto) : new APIResponse(StatusCode: 404);
         }
 
-        public async Task<Category> CreateCategoryAsync(Category category)
+        public async Task<APIResponse> CreateCategoryAsync(CategoryDTO dto)
         {
-            await dbContext.Categories.AddAsync(category);
+            Category entity = mapper.Map<Category>(dto);
+            entity.CreatedAt = DateTime.Now;
+
+            var entry = await dbContext.Categories.AddAsync(entity);
             await dbContext.SaveChangesAsync();
 
-            return category;
+            GetCategoryDTO created = mapper.Map<GetCategoryDTO>(entry.Entity);
+            return new APIResponse(StatusCode: 201, Data: created);
         }
 
-        public async Task<Category?> UpdateCategoryAsync(Guid id, Category category)
+        public async Task<APIResponse> UpdateCategoryAsync(Guid id, CategoryDTO dto)
         {
-            Category? dbCatgory = await dbContext.Categories
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Category entity = mapper.Map<Category>(dto);
+            Category? dbEntity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbCatgory is null) return null;
+            if (dbEntity is null) return new APIResponse(StatusCode: 400);
 
-            dbCatgory.Name = category.Name;
-            dbCatgory.UpdatedAt = DateTime.Now;
+            entity.Id = id;
+            dbContext.Attach(entity);
+
+            var entry = dbContext.Entry(entity);
+            entry.State = EntityState.Modified;
+            entry.Property(e => e.CreatedAt).IsModified = false;
+
             await dbContext.SaveChangesAsync();
 
-            return dbCatgory;
+            GetCategoryDTO updated = mapper.Map<GetCategoryDTO>(entry.Entity);
+            return new APIResponse(Data: updated);
         }
 
-        public async Task<Category?> DeleteCategoryAsync(Guid id)
+        public async Task<APIResponse> DeleteCategoryAsync(Guid id)
         {
-            Category? categoryExist = await dbContext.Categories
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Category? entity = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (categoryExist is null) return null;
+            if (entity is null) return new APIResponse(StatusCode: 404);
 
-            categoryExist.State = false;
+            entity.State = false;
             await dbContext.SaveChangesAsync();
 
-            return categoryExist;
+            return new APIResponse(StatusCode: 204);
         }
     }
 }

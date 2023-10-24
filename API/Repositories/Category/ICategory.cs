@@ -4,10 +4,10 @@ namespace API.Repositories
 {
     public interface ICategory
     {
-        Task<(List<Category>, int)> GetCategoriesAsync();
-        Task<Category?> GetCategoryByIdAsync(Guid id);
-        Task<Category> CreateCategoryAsync(Category category);
-        Task<Category?> UpdateCategoryAsync(Guid id, Category category);
-        Task<Category?> DeleteCategoryAsync(Guid id);
+        Task<APIResponse> GetCategoriesAsync();
+        Task<APIResponse> GetCategoryByIdAsync(Guid id);
+        Task<APIResponse> CreateCategoryAsync(CategoryDTO dto);
+        Task<APIResponse> UpdateCategoryAsync(Guid id, CategoryDTO dto);
+        Task<APIResponse> DeleteCategoryAsync(Guid id);
     }
 }

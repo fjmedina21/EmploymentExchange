@@ -1,9 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using API.Models;
+﻿using API.Models;
 using API.Helpers;
 using API.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -13,71 +12,53 @@ namespace API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategory categoryRepo;
-        private readonly IMapper mapper;
 
-        public CategoryController(ICategory categoryRepo, IMapper mapper)
+        public CategoryController(ICategory categoryRepo)
         {
             this.categoryRepo = categoryRepo;
-            this.mapper = mapper;
         }
 
         [HttpGet]
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> GetCategories()
         {
-            var (categories, total) = await categoryRepo.GetCategoriesAsync();
-            List<GetCategoryDTO> ReadCategoryDTO = mapper.Map<List<GetCategoryDTO>>(categories);
+            APIResponse response = await categoryRepo.GetCategoriesAsync();
 
-            return Ok(new APIResponse(Data: ReadCategoryDTO, Total: total)); ;
+            return Ok(response);
         }
 
-        [HttpGet]
-        [Route("{id:Guid}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
-            Category? category = await categoryRepo.GetCategoryByIdAsync(id);
-            GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
+            APIResponse response = await categoryRepo.GetCategoryByIdAsync(id);
 
-            if (category is null) return NotFound(new APIResponse(StatusCode: 404));
-
-            return Ok(new APIResponse(Data: ReadCategoryDTO));
+            return response.Ok ? Ok(response) : NotFound(response);
         }
 
         [HttpPost]
         [ValidateModel]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO categoryDTO)
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO category)
         {
-            Category category = mapper.Map<Category>(categoryDTO);
-            category = await categoryRepo.CreateCategoryAsync(category);
-            GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
+            APIResponse response = await categoryRepo.CreateCategoryAsync(category);
 
-            return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, new APIResponse(Data: ReadCategoryDTO, StatusCode: 201));
+            return response.Ok ? CreatedAtAction(nameof(CreateCategory), response) : BadRequest(response);
         }
 
-        [HttpPut]
-        [Route("{id:Guid}")]
+        [HttpPut("{id:Guid}")]
         [ValidateModel]
-        public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryDTO categoryDTO)
+        public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryDTO category)
         {
-            Category? category = mapper.Map<Category>(categoryDTO);
-            category = await categoryRepo.UpdateCategoryAsync(id, category);
+            APIResponse response = await categoryRepo.UpdateCategoryAsync(id, category);
 
-            if (category is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Check that the resource exist and try again"));
-
-            GetCategoryDTO ReadCategoryDTO = mapper.Map<GetCategoryDTO>(category);
-
-            return Ok(new APIResponse(Data: ReadCategoryDTO));
+            return response.Ok ? Ok(response) : BadRequest(response);
         }
 
-        [HttpDelete]
-        [Route("{id:Guid}")]
+        [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
-            Category? category = await categoryRepo.DeleteCategoryAsync(id);
+            APIResponse response = await categoryRepo.DeleteCategoryAsync(id);
 
-            if (category is null) return NotFound(new APIResponse(StatusCode: 404));
-
-            return NoContent();
+            return response.Ok ? NoContent() : NotFound(response);
         }
     }
 }
