@@ -32,16 +32,20 @@ namespace API.Data
             PasswordHashing hashing = new();
             hashing.HashPassword(user.Password);
 
-            List<JobType> defaultJobTypes = new List<JobType>();
-            defaultJobTypes.Add(new JobType { Name = "Full-Time" });
-            defaultJobTypes.Add(new JobType { Name = "Part-Time" });
-            defaultJobTypes.Add(new JobType { Name = "Contract" });
-            defaultJobTypes.Add(new JobType { Name = "Internship" });
+            List<JobType> defaultJobTypes = new()
+            {
+                new JobType { Name = "Full-Time" },
+                new JobType { Name = "Part-Time" },
+                new JobType { Name = "Contract" },
+                new JobType { Name = "Internship" }
+            };
 
-            List<Role> defaultRolesValues = new List<Role>();
-            defaultRolesValues.Add(new Role { Name = "admin", Description = "Site owner" });
-            defaultRolesValues.Add(new Role { Name = "poster", Description = "Recruiter, looking for employ personal" });
-            defaultRolesValues.Add(new Role { Name = "user", Description = "Employee, looking for a job" });
+            List<Role> defaultRolesValues = new()
+            {
+                new Role { Name = "admin", Description = "Site owner" },
+                new Role { Name = "poster", Description = "Recruiter, looking for employ personal" },
+                new Role { Name = "user", Description = "Employee, looking for a job" }
+            };
 
             modelBuilder.Entity<Role>().HasData(defaultRolesValues);
             modelBuilder.Entity<JobType>().HasData(defaultJobTypes);

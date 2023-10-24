@@ -14,7 +14,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration()
-    //.WriteTo.Console()
+    .WriteTo.Console()
     .WriteTo.File(path: "Logs/log.txt", rollingInterval: RollingInterval.Day)
     .MinimumLevel.Warning()
     .CreateLogger();
