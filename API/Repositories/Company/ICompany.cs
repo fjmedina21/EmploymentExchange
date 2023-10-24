@@ -4,10 +4,10 @@ namespace API.Repositories
 {
     public interface ICompany
     {
-        Task<(List<Company>, int)> GetCompaniesAsync(int pageNumber, int pageSize);
-        Task<Company?> GetCompanyByIdAsync(Guid id);
-        Task<Company> CreateCompanyAsync(Company company);
-        Task<Company?> UpdateCompanyAsync(Guid id, Company company);
-        Task<Company?> DeleteCompanyAsync(Guid id);
+        Task<APIResponse> GetAllAsync(int pageNumber, int pageSize);
+        Task<APIResponse> GetByIdAsync(Guid id);
+        Task<APIResponse> CreateAsync(CompanyDTO dto);
+        Task<APIResponse> UpdateAsync(Guid id, CompanyDTO dto);
+        Task<APIResponse> DeleteAsync(Guid id);
     }
 }

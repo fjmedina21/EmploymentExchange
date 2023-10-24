@@ -16,9 +16,7 @@ namespace API.Repositories
         public async Task<(List<Role>, int)> GetRolesAsync()
         {
             IQueryable<Role> roles = dbContext.Roles.AsNoTracking()
-                .OrderBy(e => e.Name)
-                .Where(e => e.State)
-                //.Include(e => e.Users)
+                .OrderBy(e => e.Name).Where(e => e.State)//.Include(e => e.Users)
                 .AsQueryable();
 
             List<Role> result = await roles.ToListAsync();

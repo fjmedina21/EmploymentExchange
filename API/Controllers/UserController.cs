@@ -30,8 +30,7 @@ namespace API.Controllers
             return Ok(new APIResponse(Data: ReadUsersDTO, Total: total));
         }
 
-        [HttpGet]
-        [Route("{id:Guid}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
             User? user = await userRepo.GetUserByIdAsync(id);
@@ -55,8 +54,7 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, new APIResponse(Data: ReadUserDTO, StatusCode: 201));
         }
 
-        [HttpPut]
-        [Route("{id:Guid}")]
+        [HttpPut("{id:Guid}")]
         [ValidateModel]
         public async Task<IActionResult> Updateuser([FromRoute] Guid id, [FromBody] UserDTO userDTO)
         {
@@ -70,8 +68,7 @@ namespace API.Controllers
             return Ok(new APIResponse(Data: ReadUserDTO));
         }
 
-        [HttpDelete]
-        [Route("{id:Guid}")]
+        [HttpDelete("{id:Guid}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Deleteuser([FromRoute] Guid id)
         {

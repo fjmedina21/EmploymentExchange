@@ -22,7 +22,7 @@ namespace API.Controllers
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> GetCategories()
         {
-            APIResponse response = await categoryRepo.GetCategoriesAsync();
+            APIResponse response = await categoryRepo.GetAllAsync();
 
             return Ok(response);
         }
@@ -30,7 +30,7 @@ namespace API.Controllers
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
-            APIResponse response = await categoryRepo.GetCategoryByIdAsync(id);
+            APIResponse response = await categoryRepo.GetByIdAsync(id);
 
             return response.Ok ? Ok(response) : NotFound(response);
         }
@@ -39,7 +39,7 @@ namespace API.Controllers
         [ValidateModel]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO category)
         {
-            APIResponse response = await categoryRepo.CreateCategoryAsync(category);
+            APIResponse response = await categoryRepo.CreateAsync(category);
 
             return response.Ok ? CreatedAtAction(nameof(CreateCategory), response) : BadRequest(response);
         }
@@ -48,7 +48,7 @@ namespace API.Controllers
         [ValidateModel]
         public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryDTO category)
         {
-            APIResponse response = await categoryRepo.UpdateCategoryAsync(id, category);
+            APIResponse response = await categoryRepo.UpdateAsync(id, category);
 
             return response.Ok ? Ok(response) : BadRequest(response);
         }
@@ -56,7 +56,7 @@ namespace API.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
-            APIResponse response = await categoryRepo.DeleteCategoryAsync(id);
+            APIResponse response = await categoryRepo.DeleteAsync(id);
 
             return response.Ok ? NoContent() : NotFound(response);
         }

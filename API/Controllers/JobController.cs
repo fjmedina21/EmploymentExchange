@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using API.Models;
 using API.Helpers;
 using API.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -24,75 +24,57 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetJobs([FromQuery] string? filterOn, [FromQuery] string? filterQuery, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
-            var (jobs, total) = await jobRepo.GetJobsAsync(pageNumber, pageSize, filterOn, filterQuery);
-            List<GetJobDTO> ReadJobsDTO = mapper.Map<List<GetJobDTO>>(jobs);
+            APIResponse response = await jobRepo.GetAllAsync(pageNumber, pageSize, filterOn, filterQuery);
 
-            return Ok(new APIResponse(Data: ReadJobsDTO, Total: total));
+            return response.Ok ? Ok(response) : NotFound(response);
         }
 
         //public
-        [HttpGet]
-        [Route("{id:Guid}")]
-        public async Task<IActionResult> GetJobById([FromRoute] Guid id)
-        {
-            Job? job = await jobRepo.GetJobByIdAsync(id);
-
-            if (job is null) return NotFound(new APIResponse(StatusCode: 404));
-
-            GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
-
-            return Ok(new APIResponse(Data: ReadJobDTO));
-        }
-
-        //public
-        [HttpGet]
-        [Route("{category}")]
+        [HttpGet("{category}")]
         public async Task<IActionResult> GetJobsByCategory([FromRoute] string category, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
-            List<Job>? jobs = await jobRepo.GetJobsByCategoryAsync(category, pageNumber, pageSize);
-            List<GetJobDTO> ReadJobsDTO = mapper.Map<List<GetJobDTO>>(jobs);
+            APIResponse response = await jobRepo.GetByCategoryAsync(category, pageNumber, pageSize);
 
-            return Ok(new APIResponse(Data: ReadJobsDTO));
+            return response.Ok ? Ok(response) : NotFound(response);
         }
+
+        //public
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> GetJobById([FromRoute] Guid id)
+        {
+            APIResponse response = await jobRepo.GetByIdAsync(id);
+
+            return response.Ok ? Ok(response) : NotFound(response);
+        }
+
 
         [HttpPost]
         [ValidateModel]
         [Authorize(Roles = "admin,poster")]
-        public async Task<IActionResult> CreateJob([FromBody] JobDTO jobDTO)
+        public async Task<IActionResult> CreateJob([FromBody] JobDTO job)
         {
-            Job job = mapper.Map<Job>(jobDTO);
-            job = await jobRepo.CreateJobAsync(job);
-            GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
+            APIResponse response = await jobRepo.CreateAsync(job);
 
-            return CreatedAtAction(nameof(GetJobById), new { id = job.Id }, new APIResponse(Data: ReadJobDTO, StatusCode: 201));
+            return response.Ok ? CreatedAtAction(nameof(CreateJob), response) : BadRequest(response);
         }
 
-        [HttpPut]
-        [Route("{id:Guid}")]
+        [HttpPut("{id:Guid}")]
         [ValidateModel]
         [Authorize(Roles = "admin,poster")]
-        public async Task<IActionResult> UpdateJobType([FromRoute] Guid id, [FromBody] JobDTO jobDTO)
+        public async Task<IActionResult> UpdateJobType([FromRoute] Guid id, [FromBody] JobDTO job)
         {
-            Job? job = mapper.Map<Job>(jobDTO);
-            job = await jobRepo.UpdateJobAsync(id, job);
+            APIResponse response = await jobRepo.UpdateAsync(id, job);
 
-            if (job is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Check that the resource exist and try again"));
-
-            GetJobDTO ReadJobDTO = mapper.Map<GetJobDTO>(job);
-
-            return Ok(new APIResponse(Data: ReadJobDTO));
+            return response.Ok ? Ok(response) : BadRequest(response);
         }
 
-        [HttpDelete]
-        [Route("{id:Guid}")]
+        [HttpDelete("{id:Guid}")]
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> DeleteJobType([FromRoute] Guid id)
         {
-            Job? job = await jobRepo.DeleteJobAsync(id);
+            APIResponse response = await jobRepo.DeleteAsync(id);
 
-            if (job is null) return NotFound(new APIResponse(StatusCode: 404));
-
-            return NoContent();
+            return response.Ok ? NoContent() : NotFound(response);
         }
     }
 }

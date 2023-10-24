@@ -19,19 +19,18 @@ namespace API.Repositories
 
         private IQueryable<Category>? LoadData() => dbContext.Categories.Where(e => e.State);
 
-
-        public async Task<APIResponse> GetCategoriesAsync()
+        public async Task<APIResponse> GetAllAsync()
         {
-            IQueryable<Category> entities = LoadData()!.OrderBy(e => e.Name).AsQueryable();
+            IQueryable<Category> entities = LoadData()!.OrderBy(e => e.Name);
+            int total = entities.Count();
 
             List<Category> result = await entities.ToListAsync();
             List<GetCategoryDTO> dto = mapper.Map<List<GetCategoryDTO>>(entities);
 
-            int total = entities.Count();
             return (new APIResponse(Data: dto, Total: total));
         }
 
-        public async Task<APIResponse> GetCategoryByIdAsync(Guid id)
+        public async Task<APIResponse> GetByIdAsync(Guid id)
         {
             Category? entity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
@@ -39,10 +38,9 @@ namespace API.Repositories
             return entity is not null ? new APIResponse(Data: dto) : new APIResponse(StatusCode: 404);
         }
 
-        public async Task<APIResponse> CreateCategoryAsync(CategoryDTO dto)
+        public async Task<APIResponse> CreateAsync(CategoryDTO dto)
         {
             Category entity = mapper.Map<Category>(dto);
-            entity.CreatedAt = DateTime.Now;
 
             var entry = await dbContext.Categories.AddAsync(entity);
             await dbContext.SaveChangesAsync();
@@ -51,7 +49,7 @@ namespace API.Repositories
             return new APIResponse(StatusCode: 201, Data: created);
         }
 
-        public async Task<APIResponse> UpdateCategoryAsync(Guid id, CategoryDTO dto)
+        public async Task<APIResponse> UpdateAsync(Guid id, CategoryDTO dto)
         {
             Category entity = mapper.Map<Category>(dto);
             Category? dbEntity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
@@ -71,7 +69,7 @@ namespace API.Repositories
             return new APIResponse(Data: updated);
         }
 
-        public async Task<APIResponse> DeleteCategoryAsync(Guid id)
+        public async Task<APIResponse> DeleteAsync(Guid id)
         {
             Category? entity = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 

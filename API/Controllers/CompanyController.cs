@@ -24,63 +24,47 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCompanies([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 50)
         {
-            var (companies, total) = await companyRepo.GetCompaniesAsync(pageNumber, pageSize);
-            List<GetCompanyDTO> ReadCompanyDTO = mapper.Map<List<GetCompanyDTO>>(companies);
+            APIResponse response = await companyRepo.GetAllAsync(pageNumber, pageSize);
 
-            return Ok(new APIResponse(Data: ReadCompanyDTO, Total: total));
+            return Ok(response);
         }
 
         //public
-        [HttpGet]
-        [Route("{id:Guid}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetCompanyById([FromRoute] Guid id)
         {
-            Company? company = await companyRepo.GetCompanyByIdAsync(id);
-            GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
+            APIResponse response = await companyRepo.GetByIdAsync(id);
 
-            if (company is null) return NotFound(new APIResponse(StatusCode: 404));
-
-            return Ok(new APIResponse(Data: ReadCompanyDTO));
+            return response.Ok ? Ok(response) : NotFound(response);
         }
 
         [HttpPost]
         [ValidateModel]
         [Authorize(Roles = "admin,poster")]
-        public async Task<IActionResult> CreateCompany([FromBody] CompanyDTO companyDTO)
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyDTO company)
         {
-            Company company = mapper.Map<Company>(companyDTO);
-            company = await companyRepo.CreateCompanyAsync(company);
-            GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
+            APIResponse response = await companyRepo.CreateAsync(company);
 
-            return CreatedAtAction(nameof(GetCompanyById), new { id = company.Id }, new APIResponse(Data: ReadCompanyDTO, StatusCode: 201));
+            return response.Ok ? CreatedAtAction(nameof(CreateCompany), response) : BadRequest(response);
         }
 
-        [HttpPut]
-        [Route("{id:Guid}")]
+        [HttpPut("{id:Guid}")]
         [ValidateModel]
         [Authorize(Roles = "admin,poster")]
-        public async Task<IActionResult> UpdateCompany([FromRoute] Guid id, [FromBody] CompanyDTO companyDTO)
+        public async Task<IActionResult> UpdateCompany([FromRoute] Guid id, [FromBody] CompanyDTO company)
         {
-            Company? company = mapper.Map<Company>(companyDTO);
-            company = await companyRepo.UpdateCompanyAsync(id, company);
+            APIResponse response = await companyRepo.UpdateAsync(id, company);
 
-            if (company is null) return BadRequest(new APIResponse(StatusCode: 400, Message: "Check that the resource exist and try again"));
-
-            GetCompanyDTO ReadCompanyDTO = mapper.Map<GetCompanyDTO>(company);
-
-            return Ok(new APIResponse(Data: ReadCompanyDTO));
+            return response.Ok ? Ok(response) : BadRequest(response);
         }
 
-        [HttpDelete]
-        [Route("{id:Guid}")]
+        [HttpDelete("{id:Guid}")]
         [Authorize(Roles = "admin,poster")]
         public async Task<IActionResult> DeleteCompany([FromRoute] Guid id)
         {
-            Company? company = await companyRepo.DeleteCompanyAsync(id);
+            APIResponse response = await companyRepo.DeleteAsync(id);
 
-            if (company is null) return NotFound(new APIResponse(StatusCode: 404));
-
-            return NoContent();
+            return response.Ok ? NoContent() : NotFound(response);
         }
 
     }

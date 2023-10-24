@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -7,111 +8,116 @@ namespace API.Repositories
     public class JobRepository : IJob
     {
         private readonly MyDBContext dbContext;
+        private readonly IMapper mapper;
 
-        public JobRepository(MyDBContext dbContext)
+        public JobRepository(MyDBContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
 
-        public async Task<(List<Job>, int)> GetJobsAsync(int pageNumber = 1, int pageSize = 10, string? filterOn = null, string? filterQuery = null)
+        private IQueryable<Job> LoadData() => dbContext.Jobs.Where(e => e.State)
+              .Include(e => e.JobPosition).ThenInclude(e => e.Category)
+              .Include(e => e.JobType).Include(e => e.Company)
+              .Where(e => e.JobPosition.State).Where(e => e.JobType.State).Where(e => e.Company.State)
+              .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt);
+
+        public async Task<APIResponse> GetAllAsync(int pageNumber = 1, int pageSize = 10, string? filterOn = null, string? filterQuery = null)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
 
-            IQueryable<Job> jobs = LoadData().AsNoTracking();
+            IQueryable<Job> entities = LoadData().AsNoTracking();
+            int total = entities.Count();
 
             if (!string.IsNullOrWhiteSpace(filterOn) && !string.IsNullOrWhiteSpace(filterQuery))
             {
                 switch (filterOn.ToLower())
                 {
                     case "category":
-                        jobs = jobs.Where(e => e.JobPosition.Category.Name.Contains(filterQuery));
+                        entities = entities.Where(e => e.JobPosition.Category.Name.Contains(filterQuery));
                         break;
                     case "position":
-                        jobs = jobs.Where(e => e.JobPosition.Name.Contains(filterQuery));
+                        entities = entities.Where(e => e.JobPosition.Name.Contains(filterQuery));
                         break;
                     case "company":
-                        jobs = jobs.Where(e => e.Company.Name.Contains(filterQuery));
+                        entities = entities.Where(e => e.Company.Name.Contains(filterQuery));
                         break;
                     case "location":
-                        jobs = jobs.Where(e => e.Company.Location.Contains(filterQuery));
+                        entities = entities.Where(e => e.Company.Location.Contains(filterQuery));
                         break;
                 }
             }
 
-            List<Job> result = await jobs.Skip(skipResults).Take(pageSize).ToListAsync();
-            int total = jobs.Count();
+            List<Job> result = await entities.Skip(skipResults).Take(pageSize).ToListAsync();
+            List<GetJobDTO> dto = mapper.Map<List<GetJobDTO>>(entities);
 
-            return (result, total);
+            return new APIResponse(Data: dto, Total: total);
         }
 
-        public async Task<Job?> GetJobByIdAsync(Guid id)
-        {
-            Job? job = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
-
-            return job is null ? null : job;
-        }
-
-        public async Task<List<Job>> GetJobsByCategoryAsync(string category, int pageNumber, int pageSize)
+        public async Task<APIResponse> GetByCategoryAsync(string category, int pageNumber, int pageSize)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
 
-            IQueryable<Job> jobsList = LoadData().AsNoTracking();
+            IQueryable<Job> entities = LoadData().AsNoTracking().Where(e => e.JobPosition.Category.Name.Equals(category));
+            int total = entities.Count();
 
-            List<Job> jobs = await jobsList.Where(e => e.JobPosition.Category.Name.Equals(category))
-                .Skip(skipResults).Take(pageSize).ToListAsync();
+            List<Job> result = await entities.Skip(skipResults).Take(pageSize).ToListAsync();
+            List<GetJobDTO> dto = mapper.Map<List<GetJobDTO>>(entities);
 
-            return jobs;
+            return (new APIResponse(Data: dto, Total: total));
         }
 
-        public async Task<Job> CreateJobAsync(Job job)
+        public async Task<APIResponse> GetByIdAsync(Guid id)
         {
-            await dbContext.Jobs.AddAsync(job);
+            Job? entity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
+
+            GetJobDTO dto = mapper.Map<GetJobDTO>(entity);
+            return entity is not null ? new APIResponse(Data: dto) : new APIResponse(StatusCode: 404);
+        }
+
+        public async Task<APIResponse> CreateAsync(JobDTO dto)
+        {
+            Job entity = mapper.Map<Job>(dto);
+
+            var entry = await dbContext.Jobs.AddAsync(entity);
             await dbContext.SaveChangesAsync();
 
-            return await GetJobByIdAsync(job.Id);
+            GetJobDTO created = mapper.Map<GetJobDTO>(entry.Entity);
+            return new APIResponse(StatusCode: 201, Data: created);
         }
 
-        public async Task<Job?> UpdateJobAsync(Guid id, Job job)
+        public async Task<APIResponse> UpdateAsync(Guid id, JobDTO dto)
         {
-            Job? dbJob = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Job entity = mapper.Map<Job>(dto);
+            Job? dbEntity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbJob is null) return null;
+            if (dbEntity is null) return new APIResponse(StatusCode: 400);
 
-            dbJob.CompanyId = job.CompanyId;
-            dbJob.JobPositionId = job.JobPositionId;
-            dbJob.JobTypeId = job.JobTypeId;
-            dbJob.Salary = job.Salary;
-            dbJob.Description = job.Description;
-            dbJob.UpdatedAt = DateTime.Now;
+            entity.Id = id;
+            dbContext.Attach(entity);
+
+            var entry = dbContext.Entry(entity);
+            entry.State = EntityState.Modified;
+            entry.Property(e => e.CreatedAt).IsModified = false;
+
             await dbContext.SaveChangesAsync();
 
-            return await GetJobByIdAsync(dbJob.Id); ;
+            GetJobDTO updated = mapper.Map<GetJobDTO>(entry.Entity);
+            return new APIResponse(Data: updated);
         }
 
-        public async Task<Job?> DeleteJobAsync(Guid id)
+        public async Task<APIResponse> DeleteAsync(Guid id)
         {
-            Job? jobExist = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Job? entity = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (jobExist is null) return null;
+            if (entity is null) return new APIResponse(StatusCode: 404);
 
-            jobExist.State = false;
+            entity.State = false;
             await dbContext.SaveChangesAsync();
 
-            return jobExist;
-        }
-
-        private IQueryable<Job> LoadData()
-        {
-            IQueryable<Job> jobs = dbContext.Jobs.Where(e => e.State)
-               .Include(e => e.JobPosition).ThenInclude(e => e.Category)
-               .Include(e => e.JobType).Include(e => e.Company)
-               .Where(e => e.JobPosition.State).Where(e => e.JobType.State).Where(e => e.Company.State)
-               .OrderByDescending(e => e.UpdatedAt).ThenByDescending(e => e.CreatedAt)
-               .AsQueryable();
-
-            return jobs;
+            return new APIResponse(StatusCode: 204);
         }
     }
 }

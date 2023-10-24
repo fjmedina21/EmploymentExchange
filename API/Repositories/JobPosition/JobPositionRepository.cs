@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -7,76 +8,88 @@ namespace API.Repositories
     public class JobPositionRepository : IJobPosition
     {
         private readonly MyDBContext dbContext;
+        private readonly IMapper mapper;
 
-        public JobPositionRepository(MyDBContext dbContext)
+        public JobPositionRepository(MyDBContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
 
-        public async Task<(List<JobPosition>, int)> GetJobPositionsAsync(string? category)
+        private IQueryable<JobPosition> LoadData() => dbContext.JobPositions.Where(e => e.State)
+            .Where(e => e.Category.State).Include(e => e.Category);
+
+
+        public async Task<APIResponse> GetAllAsync(string? category)
         {
-            IQueryable<JobPosition> jobPosition = dbContext.JobPositions.AsNoTracking()
-                .Where(e => e.State).Where(e => e.Category.State)
-                .Include(e => e.Category)
-                .AsQueryable();
+
+            IQueryable<JobPosition> entities = LoadData()!.OrderBy(e => e.Name);
+            int total = entities.Count();
 
             if (!string.IsNullOrWhiteSpace(category))
             {
-                jobPosition = jobPosition
-                    .Where(e => e.Category.Name.Equals(category));
+                entities = entities.Where(e => e.Category.Name.Equals(category));
+                total = entities.Count();
             }
 
-            List<JobPosition> result = await jobPosition.ToListAsync();
-            int total = jobPosition.Count();
+            List<JobPosition> result = await entities.ToListAsync();
+            List<GetJobPositionDTO> dto = mapper.Map<List<GetJobPositionDTO>>(entities);
 
-            return (result, total);
+            return new APIResponse(Data: dto, Total: total);
         }
 
-        public async Task<JobPosition?> GetJobPositionByIdAsync(Guid id)
+        public async Task<APIResponse> GetByIdAsync(Guid id)
         {
-            JobPosition? jobPosition = await dbContext.JobPositions.AsNoTracking()
-                .Where(e => e.State).Where(e => e.Category.State)
-                .Include(e => e.Category)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            JobPosition? entity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return jobPosition is null ? null : jobPosition;
+            GetJobPositionDTO dto = mapper.Map<GetJobPositionDTO>(entity);
+            return entity is not null ? new APIResponse(Data: dto) : new APIResponse(StatusCode: 404);
         }
 
-        public async Task<JobPosition> CreateJobPositionAsync(JobPosition jobPosition)
+        public async Task<APIResponse> CreateAsync(JobPositionDTO dto)
         {
-            await dbContext.JobPositions.AddAsync(jobPosition);
+            if (await dbContext.Categories.FindAsync(dto.CategoryId) is null)
+                return new APIResponse(StatusCode: 400, Message: "Category doesn't exist ");
+
+            JobPosition entity = mapper.Map<JobPosition>(dto);
+
+            var entry = await dbContext.JobPositions.AddAsync(entity);
             await dbContext.SaveChangesAsync();
 
-            return await GetJobPositionByIdAsync(jobPosition.Id);
+            GetJobPositionDTO created = mapper.Map<GetJobPositionDTO>(entry.Entity);
+            return new APIResponse(StatusCode: 201, Data: created);
         }
 
-        public async Task<JobPosition?> UpdateJobPositionAsync(Guid id, JobPosition jobPosition)
+        public async Task<APIResponse> UpdateAsync(Guid id, JobPositionDTO dto)
         {
-            JobPosition? dbJobPosition = await dbContext.JobPositions
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            JobPosition entity = mapper.Map<JobPosition>(dto);
+            JobPosition? dbEntity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbJobPosition is null) return null;
+            if (dbEntity is null) return new APIResponse(StatusCode: 400);
 
-            dbJobPosition.Name = jobPosition.Name;
-            dbJobPosition.UpdatedAt = DateTime.Now;
+            entity.Id = id;
+            dbContext.Attach(entity);
+
+            var entry = dbContext.Entry(entity);
+            entry.State = EntityState.Modified;
+            entry.Property(e => e.CreatedAt).IsModified = false;
+
             await dbContext.SaveChangesAsync();
 
-            return await GetJobPositionByIdAsync(dbJobPosition.Id); ;
+            GetJobPositionDTO updated = mapper.Map<GetJobPositionDTO>(entry.Entity);
+            return new APIResponse(Data: updated);
         }
 
-        public async Task<JobPosition?> DeleteJobPositionAsync(Guid id)
+        public async Task<APIResponse> DeleteAsync(Guid id)
         {
-            JobPosition? jobPositionExist = await dbContext.JobPositions
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            JobPosition? entity = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (jobPositionExist is null) return null;
+            if (entity is null) return new APIResponse(StatusCode: 404);
 
-            jobPositionExist.State = false;
+            entity.State = false;
             await dbContext.SaveChangesAsync();
 
-            return jobPositionExist;
+            return new APIResponse(StatusCode: 204);
         }
     }
 }

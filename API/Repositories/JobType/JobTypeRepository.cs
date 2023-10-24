@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
@@ -7,69 +8,76 @@ namespace API.Repositories
     public class JobTypeRepository : IJobType
     {
         private readonly MyDBContext dbContext;
+        private readonly IMapper mapper;
 
-        public JobTypeRepository(MyDBContext dbContext)
+        public JobTypeRepository(MyDBContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
 
-        public async Task<(List<JobType>, int)> GetJobTypesAsync()
+        private IQueryable<JobType>? LoadData() => dbContext.JobTypes.Where(e => e.State);
+
+        public async Task<APIResponse> GetAllAsync()
         {
-            IQueryable<JobType> jobTypes = dbContext.JobTypes.AsNoTracking()
-                .OrderBy(e => e.Name)
-                .Where(e => e.State)
-                .AsQueryable();
+            IQueryable<JobType> entities = LoadData()!.OrderBy(e => e.Name);
+            int total = entities.Count();
 
-            List<JobType> result = await jobTypes.ToListAsync();
-            int total = jobTypes.Count();
+            List<JobType> result = await entities.ToListAsync();
+            List<GetJobTypeDTO> dto = mapper.Map<List<GetJobTypeDTO>>(entities);
 
-            return (result, total);
+            return (new APIResponse(Data: dto, Total: total));
         }
 
-        public async Task<JobType?> GetJobTypeByIdAsync(Guid id)
+        public async Task<APIResponse> GetByIdAsync(Guid id)
         {
-            JobType? jobType = await dbContext.JobTypes.AsNoTracking()
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            JobType? entity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return jobType is null ? null : jobType;
+            GetJobTypeDTO dto = mapper.Map<GetJobTypeDTO>(entity);
+            return entity is not null ? new APIResponse(Data: dto) : new APIResponse(StatusCode: 404);
         }
 
-        public async Task<JobType> CreateJobTypeAsync(JobType jobType)
+        public async Task<APIResponse> CreateAsync(JobTypeDTO dto)
         {
-            await dbContext.JobTypes.AddAsync(jobType);
+            JobType entity = mapper.Map<JobType>(dto);
+
+            var entry = await dbContext.JobTypes.AddAsync(entity);
             await dbContext.SaveChangesAsync();
 
-            return jobType;
+            GetJobTypeDTO created = mapper.Map<GetJobTypeDTO>(entry.Entity);
+            return new APIResponse(StatusCode: 201, Data: created);
         }
 
-        public async Task<JobType?> UpdateJobTypeAsync(Guid id, JobType jobType)
+        public async Task<APIResponse> UpdateAsync(Guid id, JobTypeDTO dto)
         {
-            JobType? dbJobType = await dbContext.JobTypes
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            JobType entity = mapper.Map<JobType>(dto);
+            JobType? dbEntity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbJobType is null) return null;
+            if (dbEntity is null) return new APIResponse(StatusCode: 400);
 
-            dbJobType.Name = jobType.Name;
-            dbJobType.UpdatedAt = DateTime.Now;
+            entity.Id = id;
+            dbContext.Attach(entity);
+
+            var entry = dbContext.Entry(entity);
+            entry.State = EntityState.Modified;
+            entry.Property(e => e.CreatedAt).IsModified = false;
+
             await dbContext.SaveChangesAsync();
 
-            return dbJobType;
+            GetJobTypeDTO updated = mapper.Map<GetJobTypeDTO>(entry.Entity);
+            return new APIResponse(Data: updated);
         }
 
-        public async Task<JobType?> DeleteJobTypeAsync(Guid id)
+        public async Task<APIResponse> DeleteAsync(Guid id)
         {
-            JobType? jobTypeExist = await dbContext.JobTypes
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            JobType? entity = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (jobTypeExist is null) return null;
+            if (entity is null) return new APIResponse(StatusCode: 404);
 
-            jobTypeExist.State = false;
+            entity.State = false;
             await dbContext.SaveChangesAsync();
 
-            return jobTypeExist;
+            return new APIResponse(StatusCode: 204);
         }
     }
 }

@@ -41,8 +41,7 @@ namespace API.Controllers
             throw new NotImplementedException();
         }
 
-        [HttpPut]
-        [Route("change-password")]
+        [HttpPut("change-password")]
         [ValidateModel]
         [Authorize]
         public async Task<IActionResult> ChangePassword([FromHeader()] string authorization, [FromBody] ChangePasswordDTO model)
@@ -54,8 +53,7 @@ namespace API.Controllers
             return Ok(response);
         }
 
-        //[HttpPut]
-        //[Route("reset-password")]
+        //[HttpPut("reset-password")]
         //[ValidateModel]
         //public Task<IActionResult> ResetPassword()
         //{

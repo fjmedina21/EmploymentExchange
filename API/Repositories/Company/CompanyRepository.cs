@@ -1,4 +1,5 @@
-﻿using API.Data;
+﻿using AutoMapper;
+using API.Data;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,74 +8,81 @@ namespace API.Repositories
     public class CompanyRepository : ICompany
     {
         private readonly MyDBContext dbContext;
+        private readonly IMapper mapper;
 
-        public CompanyRepository(MyDBContext dbContext)
+
+        public CompanyRepository(MyDBContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
+            this.mapper = mapper;
         }
 
-        public async Task<(List<Company>, int)> GetCompaniesAsync(int pageNumber = 1, int pageSize = 50)
+        private IQueryable<Company>? LoadData() => dbContext.Companies.Where(e => e.State);
+
+
+        public async Task<APIResponse> GetAllAsync(int pageNumber = 1, int pageSize = 50)
         {
             //pagination
             int skipResults = (pageNumber - 1) * pageSize;
 
-            IQueryable<Company> companies = dbContext.Companies.AsNoTracking()
-                .Where(e => e.State)
-                .AsQueryable();
+            IQueryable<Company> entities = LoadData()!.OrderBy(e => e.CreatedAt).ThenByDescending(e => e.UpdatedAt).AsNoTracking();
+            int total = entities.Count();
 
-            List<Company> result = await companies.Skip(skipResults).Take(pageSize).ToListAsync();
-            int total = companies.Count();
+            List<Company> result = await entities.Skip(skipResults).Take(pageSize).ToListAsync();
+            List<GetCompanyDTO> dto = mapper.Map<List<GetCompanyDTO>>(entities);
 
-            return (result, total);
+            return (new APIResponse(Data: dto, Total: total));
         }
 
-        public async Task<Company?> GetCompanyByIdAsync(Guid id)
+        public async Task<APIResponse> GetByIdAsync(Guid id)
         {
-            Company? companie = await dbContext.Companies.AsNoTracking()
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Company? entity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            return companie is null ? null : companie;
+            GetCompanyDTO dto = mapper.Map<GetCompanyDTO>(entity);
+            return entity is not null ? new APIResponse(Data: dto) : new APIResponse(StatusCode: 404);
         }
 
-        public async Task<Company> CreateCompanyAsync(Company company)
+        public async Task<APIResponse> CreateAsync(CompanyDTO dto)
         {
-            await dbContext.Companies.AddAsync(company);
+            Company entity = mapper.Map<Company>(dto);
+
+            var entry = await dbContext.Companies.AddAsync(entity);
             await dbContext.SaveChangesAsync();
 
-            return company;
+            GetCompanyDTO created = mapper.Map<GetCompanyDTO>(entry.Entity);
+            return new APIResponse(StatusCode: 201, Data: created);
         }
 
-        public async Task<Company?> UpdateCompanyAsync(Guid id, Company company)
+        public async Task<APIResponse> UpdateAsync(Guid id, CompanyDTO dto)
         {
-            Company? dbCompany = await dbContext.Companies
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Company entity = mapper.Map<Company>(dto);
+            Company? dbEntity = await LoadData().AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (dbCompany is null) return null;
+            if (dbEntity is null) return new APIResponse(StatusCode: 400);
 
-            dbCompany.Name = company.Name;
-            dbCompany.Location = company.Location;
-            dbCompany.URL = company.URL;
-            dbCompany.Logo = company.Logo;
-            dbCompany.UpdatedAt = DateTime.Now;
+            entity.Id = id;
+            dbContext.Attach(entity);
+
+            var entry = dbContext.Entry(entity);
+            entry.State = EntityState.Modified;
+            entry.Property(e => e.CreatedAt).IsModified = false;
+
             await dbContext.SaveChangesAsync();
 
-            return dbCompany;
+            GetCompanyDTO updated = mapper.Map<GetCompanyDTO>(entry.Entity);
+            return new APIResponse(Data: updated);
         }
 
-        public async Task<Company?> DeleteCompanyAsync(Guid id)
+        public async Task<APIResponse> DeleteAsync(Guid id)
         {
-            Company? companyExist = await dbContext.Companies
-                .Where(e => e.State)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            Company? entity = await LoadData().FirstOrDefaultAsync(e => e.Id.Equals(id));
 
-            if (companyExist is null) return null;
+            if (entity is null) return new APIResponse(StatusCode: 404);
 
-            companyExist.State = false;
+            entity.State = false;
             await dbContext.SaveChangesAsync();
 
-            return companyExist;
+            return new APIResponse(StatusCode: 204);
         }
     }
 }

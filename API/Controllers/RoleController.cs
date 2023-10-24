@@ -30,8 +30,7 @@ namespace API.Controllers
             return Ok(new APIResponse(Data: ReadRolesDTO, Total: total));
         }
 
-        [HttpGet]
-        [Route("{id:Guid}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetRoleById([FromRoute] Guid id)
         {
             Role? role = await roleRepo.GetRoleByIdAsync(id);
@@ -54,8 +53,7 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new APIResponse(Data: ReadRoleDTO, StatusCode: 201));
         }
 
-        [HttpPut]
-        [Route("{id:Guid}")]
+        [HttpPut("{id:Guid}")]
         [ValidateModel]
         public async Task<IActionResult> UpdateRole([FromRoute] Guid id, [FromBody] RoleDTO roleDTO)
         {
@@ -69,8 +67,7 @@ namespace API.Controllers
             return Ok(new APIResponse(Data: ReadRoleDTO));
         }
 
-        [HttpDelete]
-        [Route("{id:Guid}")]
+        [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteRole([FromRoute] Guid id)
         {
             Role? role = await roleRepo.DeleteRoleAsync(id);
