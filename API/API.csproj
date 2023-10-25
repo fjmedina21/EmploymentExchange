@@ -30,4 +30,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\FTPProfile.pubxml.user" />
+  </ItemGroup>
+
 </Project>
